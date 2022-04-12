@@ -23,13 +23,13 @@ contract DecentralizedLibrary {
     struct FileDetail { 
         string ipfsCID; 
         string fileName; 
-        uint dateUploaded; 
+        uint timeUploaded; 
         address fileOwner;
     } 
 
     FileDetail[] public fileDetailsArray;
 
-    event FileUploaded(string ipfsCID, string fileName,uint dateUploaded , address fileOwner); 
+    event FileUploaded(string ipfsCID, string fileName,uint timeUploaded , address fileOwner); 
 
     /// @notice Makes sure the current address is the only owner -> for private files functions
     modifier onlyOwner() {
@@ -92,7 +92,7 @@ contract DecentralizedLibrary {
         return (
             collection[key].ipfsCID,
             collection[key].fileName,
-            collection[key].dateUploaded,
+            collection[key].timeUploaded,
             collection[key].fileOwner        
         );
     }
@@ -119,7 +119,7 @@ contract DecentralizedLibrary {
 
             ids[i] = collection[key].ipfsCID;
             names[i] = collection[key].fileName;
-            time[i] = collection[key].dateUploaded;
+            time[i] = collection[key].timeUploaded;
             owners[i] = collection[key].fileOwner;
         }
 
@@ -135,7 +135,7 @@ contract DecentralizedLibrary {
             _ipfsCID,  
             collection[_ipfsCID].ipfsCID, 
             collection[_ipfsCID].fileName, 
-            collection[_ipfsCID].dateUploaded, 
+            collection[_ipfsCID].timeUploaded, 
             collection[_ipfsCID].fileOwner,
         ); 
     }
@@ -147,7 +147,7 @@ contract DecentralizedLibrary {
             collection[_fileName].ipfsCID, 
             collection[_fileName].fileName, 
             collection[_fileName].fileType, 
-            collection[_fileName].dateUploaded,
+            collection[_fileName].timeUploaded,
             collection[_fileName].fileOwner, 
             collection[_fileName].exist 
         ); 
@@ -205,7 +205,7 @@ contract DecentralizedLibrary {
         return (
             privateCollection[key].ipfsCID,
             privateCollection[key].fileName,
-            privateCollection[key].dateUploaded,
+            privateCollection[key].timeUploaded,
             privateCollection[key].fileOwner
         );
     }
@@ -221,17 +221,17 @@ contract DecentralizedLibrary {
         uint len = pKey.length;
         string [] memory ids = new string[](len);
         string [] memory names = new string[](len);
-        uint [] memory date = new uint[](len);
+        uint [] memory time = new uint[](len);
         address [] memory owners = new address [](len);
 
         for (uint i = 0; i < pKey.length; ++i) {
             string memory key = pKey[i];
             ids[i] = privateCollection[key].ipfsCID;
             names[i] = privateCollection[key].fileName;
-            date[i] = privateCollection[key].dateUploaded;
+            time[i] = privateCollection[key].timeUploaded;
             owners[i] = privateCollection[key].fileOwner;
         }
-        return(ids, names, date,owners);
+        return(ids, names, time,owners);
     }
      
 }
