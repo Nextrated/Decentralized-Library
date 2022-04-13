@@ -13,7 +13,8 @@ contract DecentralizedLibrary {
     string[] public keys;
 
     mapping (address => mapping(string => FileDetail)) public privateCollection;
-    string[] private pKey;
+    mapping(address => string[]) private pKey;
+    // mapping(address => string[]) private userProfileFiles;
 
 
     mapping (string => bool) public fileExists;
@@ -57,10 +58,10 @@ contract DecentralizedLibrary {
         //initialising our struct with data
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _fileName, block.timestamp, msg.sender); 
 
-        //check uploadType
+        //check uploadType 0 is public, 1 is private
         if (_uploadType == 1) {
             privateCollection[msg.sender][_fileName] = fileDetails;
-            pKey.push(_fileName);
+            pKey[msg.sender].push(_fileName);
         } else {
             collection[_ipfsCID] = fileDetails;
             keys.push(_ipfsCID); 
@@ -164,7 +165,7 @@ contract DecentralizedLibrary {
     /// @dev    Returns only a fixed number that's the fixed length of the keys array from the iterable mapping.
     /// @return Length in unsigned integer
     function getSizeOfPrivateUploads() external view returns(uint) {
-        return pKey.length;
+        return pKey[msg.sender].length;
     }
 
 
@@ -176,8 +177,8 @@ contract DecentralizedLibrary {
     /// @return Address of the private uploader.
     function getLatestPrivateUpload() external view 
     returns ( string memory, string memory, uint, address) {
-        uint len = pKey.length;
-        string memory key = pKey[len - 1];
+        uint len = pKey[msg.sender].length;
+        string memory key = pKey[msg.sender][len - 1];
         return (
             privateCollection[msg.sender][key].ipfsCID,
             privateCollection[msg.sender][key].fileName,
@@ -186,7 +187,7 @@ contract DecentralizedLibrary {
         );
     }
 
-    /// @notice Returns details about all private files for the current address uploaded so far.
+    /// @notice Returns details about all private files uploaded so far.
     /// @dev    Details returned are the one's stored in the blockchain on upload.
     /// @return ipfsCID of all private uploads.
     /// @return File name of all the private uploads.
@@ -194,14 +195,14 @@ contract DecentralizedLibrary {
     function getAllPrivateUploads() public view
     returns(string[] memory,string[] memory, uint[] memory, address[] memory) {
 
-        uint len = pKey.length;
+        uint len = pKey[msg.sender].length;
         string [] memory ids = new string[](len);
         string [] memory names = new string[](len);
         uint [] memory time = new uint[](len);
         address [] memory owners = new address [](len);
 
-        for (uint i = 0; i < pKey.length; ++i) {
-            string memory key = pKey[i];
+        for (uint i = 0; i < len; ++i) {
+            string memory key = pKey[msg.sender][i];
             ids[i] = privateCollection[msg.sender][key].ipfsCID;
             names[i] = privateCollection[msg.sender][key].fileName;
             time[i] = privateCollection[msg.sender][key].timeUploaded;
@@ -232,9 +233,12 @@ contract DecentralizedLibrary {
         require(fileExists[_fileName] == true, "File does not exist");
         (string memory _ipfsCID, string memory _filename,
         uint _timeUploaded, address _fileOwner)  = getOnePrivateFile(_fileName);
-        require(_fileOwner == msg.sender, "FIle share not authorized. Not Owner");
+        require(_fileOwner == msg.sender, "File share not authorized. Not Owner");
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _filename , _timeUploaded, _fileOwner);
         privateCollection[_to][_fileName] = fileDetails;
+        pKey[_to].push(_fileName);
     }
-     
+
+    // function changeUploadType()
+
 }
