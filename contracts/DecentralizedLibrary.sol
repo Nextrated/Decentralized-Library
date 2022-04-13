@@ -232,53 +232,9 @@ contract DecentralizedLibrary {
         require(fileExists[_fileName] == true, "File does not exist");
         (string memory _ipfsCID, string memory _filename,
         uint _timeUploaded, address _fileOwner)  = getOnePrivateFile(_fileName);
+        require(_fileOwner == msg.sender, "FIle share not authorized. Not Owner");
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _filename , _timeUploaded, _fileOwner);
         privateCollection[_to][_fileName] = fileDetails;
     }
-
-    /// @notice Every function below belongs to admin feature
-
-    function findElementInPublicArray(string memory element) public view returns (uint) {
-        uint defaultIndex = 100000000000;
-        for (uint i = 0 ; i < keys.length ; i++) {
-            bytes32 currentItem = keccak256(abi.encode(keys[i]));
-            if (keccak256(abi.encode(element)) == currentItem) {
-                return i;
-            }
-        }
-        return defaultIndex;
-    }
-
-    function findElementInPrivateArray(string memory element) public view returns (uint) {
-        uint defaultIndex = 100000000000;
-        for (uint i = 0 ; i < pKey.length ; i++) {
-            bytes32 currentItem = keccak256(abi.encode(pKey[i]));
-            if (keccak256(abi.encode(element)) == currentItem) {
-                return i;
-            }
-        }
-        return defaultIndex;
-    }
-
-    function deletePublicFile(string memory _ipfsCID, string memory _fileName) public onlyOwner {
-        require(fileExists[_fileName] == true, "FileName does not exist");
-        require(fileExists[_ipfsCID] == true, "CID does not exist");
-        delete collection[_ipfsCID];
-        delete fileExists[_fileName];
-        delete fileExists[_ipfsCID];
-        uint fileIndex = findElementInPublicArray(_fileName);
-        delete keys[fileIndex];
-    }
-
-    function deletePrivateFile(string memory _ipfsCID, string memory _fileName, address target) public onlyOwner {
-        require(fileExists[_fileName] == true, "FileName does not exist");
-        require(fileExists[_ipfsCID] == true, "CID does not exist");
-        delete privateCollection[target][_fileName];
-        delete fileExists[_fileName];
-        delete fileExists[_ipfsCID];
-        uint fileIndex = findElementInPrivateArray(_fileName);
-        delete pKey[fileIndex];
-    }
-
      
 }
