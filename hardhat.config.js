@@ -29,11 +29,11 @@ module.exports = {
   defaultNetwork: `${defaultNetwork}`,
   networks: {
     hardhat: {
-      chainId: 1337
+      // chainId: 1337
     },
     rinkeby: {
       url: API_URL,
-      accounts: [METAMASK_PRIVATE_KEY],
+      accounts: [`0x${METAMASK_PRIVATE_KEY}`],
     }
   },
   etherscan: {
