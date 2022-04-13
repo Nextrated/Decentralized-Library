@@ -210,6 +210,7 @@ contract DecentralizedLibrary {
     /// @return _fileOwner address of file uploader.
     function getOnePrivateFile(string memory _fileName) public view 
     returns (string memory _ipfsCID, string memory _filename, uint _timeUploaded, address _fileOwner) {
+        require(fileExists[_fileName] == true, "File does not exist");
         _ipfsCID = privateCollection[msg.sender][_fileName].ipfsCID;
         _filename = privateCollection[msg.sender][_fileName].fileName;
         _timeUploaded = privateCollection[msg.sender][_fileName].timeUploaded;
