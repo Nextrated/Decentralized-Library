@@ -1,14 +1,14 @@
 const { ethers } = require("hardhat");
 const fs = require('fs')
 
-const contractName = ""
+const contractName = "DecentralizedLibrary"
 
 async function main() {
   const [deployer] = await ethers.getSigners();
   
   console.log("Deploying contracts with the account:", deployer.address);
   
-  const contractFactory = await ethers.getContractFactory("")
+  const contractFactory = await ethers.getContractFactory(contractName)
 
   const contract = await contractFactory.deploy()
 
@@ -20,9 +20,11 @@ async function main() {
   await contract.deployed()
   const abi = fs.readFileSync(`src/artifacts/contracts/${contractName}.sol/${contractName}.json`);
 
-  
+  // await fs.mkdir('.src/contracts', { recursive: true }, (err) => {
+    // if (err) throw err;
+  // });
 
-  fs.writeFileSync('./src/artifacts/contracts/abi.json', abi);
+  fs.writeFileSync('./src/contracts/abi.json', abi);
   fs.writeFileSync('./src/contracts/contract_address.json', address)
 
 }
