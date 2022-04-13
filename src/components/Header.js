@@ -5,7 +5,7 @@ import {GiHamburgerMenu} from "react-icons/gi";
 import {AiOutlineWallet} from "react-icons/ai"
 
 export default function Header({showSidebar , isConnected, currentAccount, toggleWallet}) {
-    const bg = useColorModeValue("blackAlpha.100", "primaryLight");
+    const bg = useColorModeValue("whitesmoke", "primaryLight");
     const text = useColorModeValue("black", "white");
 
     //truncate wallet address
@@ -21,6 +21,7 @@ export default function Header({showSidebar , isConnected, currentAccount, toggl
         position="fixed" 
         d="flex" 
         justifyContent="space-between"
+        alignItems="center"
         zIndex="99"
     >
             <Box>

@@ -30,9 +30,17 @@ contract DecentralizedLibrary {
 
     event FileUploaded(string ipfsCID, string fileName, uint timeUploaded , address fileOwner); 
 
+
+
     /// @notice Makes sure the current address is the only owner -> for private files functions
     constructor(){
         owner = msg.sender;
+    }
+
+    /// @notice Makes sure the current address is the only owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only current address can do this");
+        _;
     }
 
 
@@ -178,7 +186,7 @@ contract DecentralizedLibrary {
         );
     }
 
-    /// @notice Returns details about all private files uploaded so far.
+    /// @notice Returns details about all private files for the current address uploaded so far.
     /// @dev    Details returned are the one's stored in the blockchain on upload.
     /// @return ipfsCID of all private uploads.
     /// @return File name of all the private uploads.
@@ -224,6 +232,7 @@ contract DecentralizedLibrary {
         require(fileExists[_fileName] == true, "File does not exist");
         (string memory _ipfsCID, string memory _filename,
         uint _timeUploaded, address _fileOwner)  = getOnePrivateFile(_fileName);
+        require(_fileOwner == msg.sender, "FIle share not authorized. Not Owner");
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _filename , _timeUploaded, _fileOwner);
         privateCollection[_to][_fileName] = fileDetails;
     }
