@@ -15,6 +15,8 @@ import {
   Radio,
   HStack,
   ModalFooter,
+  useToast,
+  toast
 } from '@chakra-ui/react';
 import {Buffer} from 'buffer'
 import {create} from 'ipfs-http-client'
@@ -34,7 +36,8 @@ const Upload = () => {
   const [file, setFile] = useState(null)
   const [fileDetails, setFileDetails] = useState('')
   const [cid, setCid] = useState('')
-
+  const [isTxnDone, setIsTxnDone] = useState(false)
+  const [submitted, setSubmitted] = useState('false')
   const captureFile = (e) => {
     const data = e.target.files[0]
     setFileDetails(data)
@@ -54,7 +57,7 @@ const Upload = () => {
             const fileUploadContract = new ethers.Contract(contractAddress, abi.abi, signer)
             const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
             await fileUploadTxn.wait()
-            console.log(fileUploadTxn)
+          setSubmitted(false)
 
         }else{
             console.log('ethereum object does not exist!')
@@ -73,11 +76,12 @@ const Upload = () => {
 
   const submitUpload = async (e) => {
       e.preventDefault()
-      console.log('submitted')
+      setSubmitted(true)
       try {
         const created = await client.add(file)
        setCid(created.cid.toString())
        fileUpload()
+
       } catch (error) {
         console.log(error)
       }
@@ -98,6 +102,7 @@ const Upload = () => {
       >
         <ModalOverlay />
         <ModalContent>
+
           <ModalHeader>
             Upload your file here
           </ModalHeader>
@@ -121,6 +126,7 @@ const Upload = () => {
                 </HStack>
               </RadioGroup>
               <ModalFooter>
+                
                 <Button colorScheme="blue" mr={3} type='submit'>
                   Submit
                 </Button>
