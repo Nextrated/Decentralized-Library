@@ -13,6 +13,7 @@ import AllFiles from './pages/AllFiles';
 import PublicFiles from "./pages/PublicFiles";
 import PrivateFiles from "./pages/PrivateFiles";
 import SharedFiles from "./pages/SharedFiles";
+import "./App.css";
 
 function App() {
   const {isOpen, onOpen, onClose}= useDisclosure();
@@ -25,6 +26,7 @@ function App() {
   const [showPrivate, setshowPrivate] = useState(false);
   const [showShared, setshowShared] = useState(false);
 
+  // sets trhe current page to show all files
   const setAllPage = () => {
     setshowPublic(false);
     setshowPrivate(false);
@@ -32,6 +34,7 @@ function App() {
     setshowAll(true);
   }
 
+  // sets the current page to show shared files
   const setSharedPage = () => {
     setshowPublic(false);
     setshowPrivate(false);
@@ -39,6 +42,7 @@ function App() {
     setshowAll(false);
   }
 
+  // sets te current page to show private files
   const setPrivatePage = () => {
     setshowPublic(false);
     setshowPrivate(true);
@@ -46,6 +50,7 @@ function App() {
     setshowAll(false);
   }
 
+  // sets the current page to show public files
   const setPublicPage = () => {
     setshowPublic(true);
     setshowPrivate(false);
@@ -53,6 +58,7 @@ function App() {
     setshowAll(false);
   }
    
+  // checks if a wallet is connected
     const checkIfWalletIsConnected = async () => {
       try {
         const {ethereum} = window;

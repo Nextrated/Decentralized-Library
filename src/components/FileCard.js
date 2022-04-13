@@ -1,15 +1,38 @@
 import React from 'react'
-import { Box, Image, Badge, Text } from "@chakra-ui/react"
+import { Box, Image, Badge, Text, useColorModeValue } from "@chakra-ui/react";
+import FileCardActions from './FileCardActions';
+
 
 export default function FileCard() {
+  const bg = useColorModeValue("whitesmoke", "primaryLight");
   return (
-    <Box border="1px solid gray" mx={{base:'auto', md:2}} mb={3} borderRadius="lg" w={{base:"80%", md:"40%", lg:"30%"}} overflow="hidden">
+    <Box 
+      mx={{base:'auto', md:2}} 
+      mb={5} 
+      borderRadius="lg" 
+      w={{base:"100%", md:"45%", lg:"30%"}} 
+      overflow="hidden"
+      bg={bg}
+      boxShadow="lg"
+    >
         <Image src="dp.png" alt="fileimg" h="180px" w="100%"/>
-        <Box p={5} fontSize="md">
-            <Badge colorScheme="teal" borderRadius="full">Public</Badge>
-            <Text>A sample Text</Text>
-            <Text>Uploaded at: 12:00am</Text>
-            <Text>Uploaded by : Anonymous</Text>
+        <Box p={5} fontSize="sm" fontWeight="700" textAlign="left">
+            <Badge colorScheme="teal" borderRadius="full" mb={3}>Public</Badge>
+            <Box d="flex" >
+              <Text color="gray.500" mr={3}>Title:</Text>
+              <Text>A sample Text</Text>
+            </Box>
+            <Box d="flex">
+            <Text color="gray.500" mr={3}>Uploaded at:</Text>
+              <Text>12:00am</Text>
+            </Box>
+            <Box d="flex">
+            <Text color="gray.500" mr={3}>Uploaded by:</Text>
+              <Text>0xagdgydftyfwgg72i6rgsdvcsgtf</Text>
+            </Box>
+            <Box mt={3} px={5} cursor="pointer">
+              <FileCardActions />
+            </Box>
         </Box>
 
     </Box>

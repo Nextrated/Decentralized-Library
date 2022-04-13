@@ -4,7 +4,7 @@ import FileCard from '../components/FileCard';
 
 export default function AllFiles() {
   return (
-    <Box d="flex" flexWrap="wrap" px={10} mt={5} mx="auto" justifyContent="space-around">
+    <Box d="flex" flexWrap="wrap" px={{base:5 , md:10, lg:12 }} mt={5} mx="auto" justifyContent="space-around">
         
         <FileCard/>
         <FileCard/>
