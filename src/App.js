@@ -5,7 +5,11 @@ import {
   useDisclosure,
   useColorModeValue,
   Text,
-  Button
+  Button,
+  Modal,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody
 } from '@chakra-ui/react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -13,7 +17,7 @@ import AllFiles from './pages/AllFiles';
 import PublicFiles from "./pages/PublicFiles";
 import PrivateFiles from "./pages/PrivateFiles";
 import SharedFiles from "./pages/SharedFiles";
-import "./App.css";
+import Upload from './components/Upload'
 
 function App() {
   const {isOpen, onOpen, onClose}= useDisclosure();
@@ -141,9 +145,7 @@ function App() {
               {showPrivate ? "Private files" : null}
             </Text>
 
-            <Button bg="purple" color="white" ml={5}>
-                Upload file
-            </Button>
+            <Upload />
           </Box>
           {showAll ? <AllFiles /> : null}
           {showPrivate ? <PrivateFiles /> : null}
