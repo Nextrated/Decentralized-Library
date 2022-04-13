@@ -236,8 +236,6 @@ contract DecentralizedLibrary {
         privateCollection[_to][_fileName] = fileDetails;
     }
 
-    
-
     /// @notice Every function below belongs to admin feature
 
     function findElementInPublicArray(string memory element) public view returns (uint) {
