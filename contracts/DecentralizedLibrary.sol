@@ -186,7 +186,7 @@ contract DecentralizedLibrary {
         );
     }
 
-    /// @notice Returns details about all private files uploaded so far.
+    /// @notice Returns details about all private files for the current address uploaded so far.
     /// @dev    Details returned are the one's stored in the blockchain on upload.
     /// @return ipfsCID of all private uploads.
     /// @return File name of all the private uploads.
