@@ -20,9 +20,10 @@ import {Buffer} from 'buffer'
 import {create} from 'ipfs-http-client'
 
 import abi from '../contracts/abi.json'
-import contractAddress from '../contracts/contract_address.json'
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
+
+const contractAddress = '0x60Cf639967407503958fd3d5205fa93dd1f6522D'
 
 const Upload = () => {
   const {isOpen, onOpen, onClose} = useDisclosure ();
@@ -42,7 +43,6 @@ const Upload = () => {
     reader.onloadend = () => {
       setFile(Buffer(reader.result))
     }
-    
   }
 
   const fileUpload = async () => {
