@@ -8,12 +8,13 @@ pragma solidity ^0.8.4;
 /// @custom:experimental This contract is a PoC.
 contract DecentralizedLibrary { 
 
-    address public owner;
+    address public owner = msg.sender;
     mapping (string => FileDetail) public collection; 
+    mapping(string => bool) public uploaded;
     string[] public keys;
 
-    mapping (address => mapping(string => FileDetail)) public privateCollection;
-    string[] private pKey;
+    mapping (string => FileDetail) public privateCollection;
+    string[] public pKey;
 
 
     mapping (string => bool) public fileExists;
@@ -26,41 +27,44 @@ contract DecentralizedLibrary {
         address fileOwner;
     } 
 
-    // FileDetail[] public fileDetailsArray;
+    FileDetail[] public fileDetailsArray;
 
-    event FileUploaded(string ipfsCID, string fileName, uint timeUploaded , address fileOwner); 
+    event FileUploaded(string ipfsCID, string fileName,uint timeUploaded , address fileOwner); 
 
     /// @notice Makes sure the current address is the only owner -> for private files functions
-    constructor(){
-        owner = msg.sender;
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only current address can do this");
+        _;
     }
 
+    constructor () {   
+
+    } 
 
     /// @notice Upload files to a public dashboard.
     /// @param  _ipfsCID The CID hash of the file uploaded to ipfs/any decentralised storage
     /// @param  _fileName The file name of the file
-    /// @param _uploadType its either 0 for public and 1 for private
     /// @dev    The params are stored on the blockchain on function call, lookups can be done 
-    function fileUpload(string memory _ipfsCID, string memory _fileName, uint _uploadType) 
+    function publicUpload(string memory _ipfsCID, string memory _fileName) 
     public { 
-        require(fileExists[_ipfsCID] == false, "File with this CID already exists.");
+        require(fileExists[_ipfsCID] == false, "File with this CID already exists."); 
         require(fileExists[_fileName] == false, "File with this Name already exists, Rename.");
-
         //initialising our struct with data
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _fileName, block.timestamp, msg.sender); 
 
-        //check uploadType
-        if (_uploadType == 1) {
-            privateCollection[msg.sender][_fileName] = fileDetails;
-            pKey.push(_fileName);
-        } else {
-            collection[_ipfsCID] = fileDetails;
-            keys.push(_ipfsCID); 
-        }
+        //setting up ways to get data with these methods
         
-        // set fileExist to true
-        fileExists[_fileName] = true;
+        //assigning files with their cid, so we'll be able to retrieve files with CID
+        collection[_ipfsCID] = fileDetails; 
         fileExists[_ipfsCID] = true;
+        fileExists[_fileName] = true;
+
+        //seeing the key of the mappings to be the fileNames, so when we neet to iterate,
+        //it'll use keys[i] ==> mimicking collection[_ipfsCID].ipfsCID for instance
+        if(!uploaded[_ipfsCID]) {
+            uploaded[_ipfsCID] = true;
+            keys.push(_ipfsCID);
+        }
 
         emit FileUploaded(_ipfsCID, _fileName, block.timestamp, msg.sender);
 
@@ -151,11 +155,39 @@ contract DecentralizedLibrary {
          */
     
     
+     
+
+    /// @notice Upload files to a private dashboard just for the current address
+    /// @param  _ipfsCID The CID hash of the file uploaded to ipfs/any decentralised storage
+    /// @param  _fileName The file name of the filw
+    /// @dev    The params are stored on the blockchain on function call, lookups can be done 
+     function privateUpload(string memory _ipfsCID, string memory _fileName)
+      public onlyOwner{
+        require(fileExists[_ipfsCID] == false, "File with this CID already exists."); 
+        require(fileExists[_fileName] == false, "File with this Name already exists, Rename.");
+
+        //initialising our struct with data
+        FileDetail memory fileDetails = FileDetail(_ipfsCID, _fileName, block.timestamp, msg.sender); 
+        
+        //assigning files with their cid, so we'll be able to retrieve files with CID
+        privateCollection[_ipfsCID] = fileDetails; 
+        fileExists[_ipfsCID] = true;
+        fileExists[_fileName] = true;
+
+        
+        if(!uploaded[_ipfsCID]) {
+            uploaded[_ipfsCID] = true;
+            pKey.push(_ipfsCID);
+        }
+
+        emit FileUploaded(_ipfsCID, _fileName, block.timestamp, msg.sender);
+
+    }
 
     /// @notice Returns the total number of files uploaded.
     /// @dev    Returns only a fixed number that's the fixed length of the keys array from the iterable mapping.
     /// @return Length in unsigned integer
-    function getSizeOfPrivateUploads() external view returns(uint) {
+    function getSizeOfPrivateUploads() external view onlyOwner returns(uint) {
         return pKey.length;
     }
 
@@ -166,15 +198,15 @@ contract DecentralizedLibrary {
     /// @return File name of the last private upload.
     /// @return Date the private file got uploaded 
     /// @return Address of the private uploader.
-    function getLatestPrivateUpload() external view 
+    function getLatestPrivateUpload() external view onlyOwner
     returns ( string memory, string memory, uint, address) {
         uint len = pKey.length;
         string memory key = pKey[len - 1];
         return (
-            privateCollection[msg.sender][key].ipfsCID,
-            privateCollection[msg.sender][key].fileName,
-            privateCollection[msg.sender][key].timeUploaded,
-            privateCollection[msg.sender][key].fileOwner
+            privateCollection[key].ipfsCID,
+            privateCollection[key].fileName,
+            privateCollection[key].timeUploaded,
+            privateCollection[key].fileOwner
         );
     }
 
@@ -183,7 +215,7 @@ contract DecentralizedLibrary {
     /// @return ipfsCID of all private uploads.
     /// @return File name of all the private uploads.
     /// @return Address of the private uploader.
-    function getAllPrivateUploads() public view
+    function getAllPrivateUploads() public view onlyOwner
     returns(string[] memory,string[] memory, uint[] memory, address[] memory) {
 
         uint len = pKey.length;
@@ -194,37 +226,12 @@ contract DecentralizedLibrary {
 
         for (uint i = 0; i < pKey.length; ++i) {
             string memory key = pKey[i];
-            ids[i] = privateCollection[msg.sender][key].ipfsCID;
-            names[i] = privateCollection[msg.sender][key].fileName;
-            time[i] = privateCollection[msg.sender][key].timeUploaded;
-            owners[i] = privateCollection[msg.sender][key].fileOwner;
+            ids[i] = privateCollection[key].ipfsCID;
+            names[i] = privateCollection[key].fileName;
+            time[i] = privateCollection[key].timeUploaded;
+            owners[i] = privateCollection[key].fileOwner;
         }
-        return(ids, names, time, owners);
-    }
-
-    /// @notice Returns details about a specific file uploaded by msg.sender.
-    /// @param _fileName unique name of the file to be fetched
-    /// @return _ipfsCID file CID.
-    /// @return _filename file name.
-    /// @return _timeUploaded upload date of file
-    /// @return _fileOwner address of file uploader.
-    function getOnePrivateFile(string memory _fileName) public view 
-    returns (string memory _ipfsCID, string memory _filename, uint _timeUploaded, address _fileOwner) {
-        _ipfsCID = privateCollection[msg.sender][_fileName].ipfsCID;
-        _filename = privateCollection[msg.sender][_fileName].fileName;
-        _timeUploaded = privateCollection[msg.sender][_fileName].timeUploaded;
-        _fileOwner = privateCollection[msg.sender][_fileName].fileOwner;
-    }
-
-    /// @notice Shares a fileDetail struct with another address.
-    /// @param _to intended address to receive file.
-    /// @param _fileName unique name of file to be shared.
-    function sharePrivateFile(address _to, string memory _fileName) external {
-        require(fileExists[_fileName] == true, "File does not exist");
-        (string memory _ipfsCID, string memory _filename,
-        uint _timeUploaded, address _fileOwner)  = getOnePrivateFile(_fileName);
-        FileDetail memory fileDetails = FileDetail(_ipfsCID, _filename , _timeUploaded, _fileOwner);
-        privateCollection[_to][_fileName] = fileDetails;
+        return(ids, names, time,owners);
     }
      
 }
