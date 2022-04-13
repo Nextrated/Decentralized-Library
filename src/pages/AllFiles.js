@@ -6,7 +6,7 @@ export default function AllFiles() {
   const files = [
     { 
       file_type: "Public",
-      description: "A sample text", 
+      title: "A sample text", 
       uploaded_at: "12:00 am", 
       uploaded_by: "Anonymous"
     },

@@ -12,9 +12,11 @@ export default function FileCard(props) {
       mb={5} 
       borderRadius="lg" 
       w={{base:"100%", md:"45%", lg:"30%"}} 
+      // h={{base: "75%"}}
       overflow="hidden"
       bg={bg}
       boxShadow="lg"
+      // minWidth={"300px"}
     >
         <Image src="dp.png" alt="fileimg" h="180px" w="100%"/>
         <Box p={5} fontSize="sm" fontWeight="700" textAlign="left">
