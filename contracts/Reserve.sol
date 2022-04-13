@@ -6,7 +6,7 @@ pragma solidity ^0.8.4;
 /// @notice You can use this to contract store files in a decentralized and distributed system 
 /// @dev All function calls are currently implemented without side effects
 /// @custom:experimental This contract is a PoC.
-contract DecentralizedLibrary { 
+contract DLIB { 
 
     address public owner = msg.sender;
     mapping (string => FileDetail) public collection; 
