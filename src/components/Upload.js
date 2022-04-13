@@ -16,7 +16,7 @@ import {
   HStack,
   ModalFooter,
   useToast,
-  toast
+  Text
 } from '@chakra-ui/react';
 import {Buffer} from 'buffer'
 import {create} from 'ipfs-http-client'
@@ -25,7 +25,7 @@ import abi from '../contracts/abi.json'
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
-const contractAddress = '0x60Cf639967407503958fd3d5205fa93dd1f6522D'
+const contractAddress = '0xF66E577305EE88B655589d0E5E0c211422b31b0a'
 
 const Upload = () => {
   const {isOpen, onOpen, onClose} = useDisclosure ();
@@ -36,8 +36,8 @@ const Upload = () => {
   const [file, setFile] = useState(null)
   const [fileDetails, setFileDetails] = useState('')
   const [cid, setCid] = useState('')
-  const [isTxnDone, setIsTxnDone] = useState(false)
-  const [submitted, setSubmitted] = useState('false')
+  const [submitted, setSubmitted] = useState('')
+  const toast = useToast()
   const captureFile = (e) => {
     const data = e.target.files[0]
     setFileDetails(data)
@@ -57,7 +57,10 @@ const Upload = () => {
             const fileUploadContract = new ethers.Contract(contractAddress, abi.abi, signer)
             const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
             await fileUploadTxn.wait()
-          setSubmitted(false)
+            setSubmitted('Upload successful!')
+            setTimeout(() => {
+              setSubmitted('')
+            }, 4000);
 
         }else{
             console.log('ethereum object does not exist!')
@@ -76,7 +79,7 @@ const Upload = () => {
 
   const submitUpload = async (e) => {
       e.preventDefault()
-      setSubmitted(true)
+      setSubmitted('uploading file...')
       try {
         const created = await client.add(file)
        setCid(created.cid.toString())
@@ -126,7 +129,7 @@ const Upload = () => {
                 </HStack>
               </RadioGroup>
               <ModalFooter>
-                
+                <Text mr={2} color={'green.500'}>{submitted}</Text>
                 <Button colorScheme="blue" mr={3} type='submit'>
                   Submit
                 </Button>
