@@ -17,6 +17,7 @@ contract DecentralizedLibrary {
 
     mapping (address => mapping(string => FileDetail)) public sharedCollection;
     mapping(address => string[]) private sKey;
+    address[] public sharedAccess;
 
 
     mapping (string => bool) public fileExists;
@@ -39,6 +40,12 @@ contract DecentralizedLibrary {
         owner = msg.sender;
     }
 
+    /// @notice Makes sure the current address is the only owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only current address can do this");
+        _;
+    }
+
 
     /// @notice Upload files to a public dashboard.
     /// @param  _ipfsCID The CID hash of the file uploaded to ipfs/any decentralised storage
@@ -47,7 +54,7 @@ contract DecentralizedLibrary {
     /// @dev    The params are stored on the blockchain on function call, lookups can be done 
     function fileUpload(string memory _ipfsCID, string memory _fileName, uint _uploadType) 
     public { 
-        require(fileExists[_ipfsCID] == false, "File with this CID already exists.");
+       // require(fileExists[_ipfsCID] == false, "File with this CID already exists.");
         require(fileExists[_fileName] == false, "File with this Name already exists, Rename.");
 
         //initialising our struct with data
@@ -234,6 +241,7 @@ contract DecentralizedLibrary {
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _filename , _timeUploaded, _fileOwner);
         sharedCollection[_to][_fileName] = fileDetails;
         sKey[_to].push(_fileName);
+        sharedAccess.push(_to);
     }
 
 
