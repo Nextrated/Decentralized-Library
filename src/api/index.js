@@ -14,40 +14,39 @@ const getSigner = async (ethereum) => {
     return provider.getSigner()
 }
 
-const getAccount = async (ethereum) => {
-    const accounts = await ethereum.request ({method: 'eth_accounts'});
+const timeConv = (t) => {
+    let x = t.toString(16) * 1000
+    x = new Date(+x);
+    return x.toDateString();
+}
+
+const parseResult = (txnResult, fileType) => {
+    if (txnResult[0].length > 0) {
+        const ids = txnResult[0]
         
-    if (accounts.length !== 0) {
-          return accounts[0];
-    }
-
-    return null
-}
-
-const parseResult = (txnResult) => {
-    const ids = txnResult[0]
-    
-    const names = txnResult[1]
-    const time = txnResult[2]
-    const owners = txnResult[3]
-  
-    let files = []
-  
-    for(let i = 0; i < ids.length; i++) {
-        const file = {
-            cid: ids[i],
-            title: names[i], 
-            uploaded_at: new Date(time[i].toBigInt()), 
-            uploaded_by: owners[i],
-        }
+        const names = txnResult[1]
+        const time = txnResult[2]
+        const owners = txnResult[3]
       
-        files.push(file)
+        let files = []
+      
+        for(let i = 0; i < ids.length; i++) {
+            const file = {
+                cid: ids[i],
+                title: names[i], 
+                uploaded_at: timeConv(time[i]._hex), 
+                uploaded_by: owners[i],
+                fileType: fileType
+            }
+            files.push(file)
+        }
+        return files
     }
 
-    return files
+    return []
 }
 
-export const getContract = async (ethereum) => {
+const getContract = async (ethereum) => {
     const signer = await getSigner(ethereum)
 
     const contract = new ethers.Contract(contractAddress.contractAddress, contractAbi.abi, signer)
@@ -55,94 +54,44 @@ export const getContract = async (ethereum) => {
     return contract
 }
 
-export const getPublicFiles = async (ethereum) => {
-    const contract = await getContract(ethereum)
-    const txnResult = await contract.getAllPublicUploads()
-
-    const publicFiles = parseResult(txnResult)
-
-    // const ids = txnResult[0]
+export const fetchPublicFiles = async (ethereum) => {
+    try {
+        const contract = await getContract(ethereum)
+        const txnResult = await contract.getAllPublicUploads()
     
-    // const names = txnResult[1]
-    // const time = txnResult[2]
-    // const owners = txnResult[3]
-  
-    // let publicFiles = []
-  
-    // for(let i = 0; i < ids.length; i++) {
-    //     const file = {
-    //         cid: ids[i],
-    //         title: names[i], 
-    //         uploaded_at: time[i].toBigInt(), 
-    //         uploaded_by: owners[i],
-    //     }
-      
-    //     publicFiles.push(file)
-    // }
-
-    return publicFiles
+        const publicFiles = parseResult(txnResult, "Public")
+    
+        return publicFiles
+    } catch(error) {
+        console.log("Error: ", error)
+        return []
+    }
 }
 
-export const getPrivateFiles = async (ethereum) => {
-    const contract = await getContract(ethereum)
-    const txnResult = await contract.getAllPrivateUploads()
-
-    const privateFiles = parseResult(txnResult)
-
-    // const ids = txnResult[0]
+export const fetchPrivateFiles = async (ethereum) => {
+    try {
+        const contract = await getContract(ethereum)
+        const txnResult = await contract.getAllPrivateUploads()
     
-    // const names = txnResult[1]
-    // const time = txnResult[2]
-    // const owners = txnResult[3]
-  
-    // let privateFiles = []
-  
-    // const account = await getAccount(ethereum)
-
-    // for(let i = 0; i < ids.length; i++) {
-    //     if (owners[i] === account) {
-    //         const file = {
-    //             cid: ids[i],
-    //             title: names[i], 
-    //             uploaded_at: time[i].toBigInt(), 
-    //             uploaded_by: owners[i],
-    //         }
-            
-    //         privateFiles.push(file)
-    //     }
-    // }
-
-    return privateFiles
+        const privateFiles = parseResult(txnResult, "Private")
+    
+        return privateFiles
+    } catch(error) {
+        console.log("Error: ", error)
+        return []
+    }
 }
 
-export const getSharedFiles = async (ethereum) => {
-    const contract = await getContract(ethereum)
-    const txnResult = await contract.getSharedFiles()
-
-    const sharedFiles = parseResult(txnResult)
-
-    // const ids = txnResult[0]
+export const fetchSharedFiles = async (ethereum) => {
+    try {
+        const contract = await getContract(ethereum)
+        const txnResult = await contract.getSharedFiles()
     
-    // const names = txnResult[1]
-    // const time = txnResult[2]
-    // const owners = txnResult[3]
-  
-    // let sharedFiles = []
-
-    // const account = await getAccount(ethereum)
-  
-    // for(let i = 0; i < ids.length; i++) {
-    //     if (owners[i] !== account) {
-    //         const file = {
-    //             cid: ids[i],
-    //             title: names[i], 
-    //             uploaded_at: time[i].toBigInt(), 
-    //             uploaded_by: owners[i],
-    //         }
-
-    //         sharedFiles.push(file)
-    //     }
-    // }
-
-    return sharedFiles
+        const sharedFiles = parseResult(txnResult, "Shared")
+    
+        return sharedFiles
+    } catch(error) {
+        console.log("Error: ", error)
+        return []
+    }
 }
