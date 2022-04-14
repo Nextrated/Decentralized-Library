@@ -2,6 +2,8 @@ import React from 'react'
 import { Box } from "@chakra-ui/react"
 import FileCard from '../components/FileCard';
 
+import { getSharedFiles } from '../api';
+
 export default function SimilarFiles() {
   const fileType = "Shared"
   

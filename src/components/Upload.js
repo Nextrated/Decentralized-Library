@@ -22,17 +22,18 @@ import {Buffer} from 'buffer'
 import {create} from 'ipfs-http-client'
 
 import abi from '../contracts/abi.json'
+import contractAddress from '../contracts/contract_address.json'
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
-const contractAddress = '0x60Cf639967407503958fd3d5205fa93dd1f6522D'
+// const contractAddress = '0x60Cf639967407503958fd3d5205fa93dd1f6522D'
 
 const Upload = () => {
   const {isOpen, onOpen, onClose} = useDisclosure ();
   const initialRef = useRef ();
   const finalRef = useRef ();
   const [fileName, setFileName] = useState('')
-  const [type, setType] = useState('')
+  const [type, setType] = useState('0')
   const [file, setFile] = useState(null)
   const [fileDetails, setFileDetails] = useState('')
   const [cid, setCid] = useState('')
@@ -44,7 +45,9 @@ const Upload = () => {
     const reader = new window.FileReader()
     reader.readAsArrayBuffer(data);
     reader.onloadend = () => {
-      setFile(Buffer(reader.result))
+      const f = Buffer(reader.result)
+      console.log("File: ", f) 
+      setFile(f)
     }
   }
 
@@ -54,25 +57,31 @@ const Upload = () => {
         if(ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
-            const fileUploadContract = new ethers.Contract(contractAddress, abi.abi, signer)
+            const fileUploadContract = new ethers.Contract(contractAddress.contractAddress, abi.abi, signer)
+
+            console.log("CID: ", cid)
+            console.log("file name: ", fileName)
+            console.log("type: ", type)
+
             const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
             await fileUploadTxn.wait()
-          setSubmitted(false)
 
-        }else{
+            await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
+              setSubmitted(false)
+              console.log("ipfsCID: ", ipfsCID)
+              console.log("fileName: ", fileName)
+              console.log("timeUploaded: ", timeUploaded)
+              console.log("fileOwner: ", fileOwner)
+            })        
+            
+
+        } else{
             console.log('ethereum object does not exist!')
         }
     } catch (error) {
         console.log(error)
     }
 }
-
-
-
-
-
-
-
 
   const submitUpload = async (e) => {
       e.preventDefault()
@@ -85,8 +94,6 @@ const Upload = () => {
       } catch (error) {
         console.log(error)
       }
-
-
   }
   return (
     <div>
