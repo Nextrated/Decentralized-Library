@@ -63,13 +63,9 @@ const Upload = () => {
               setSubmitted('')
               onClose()
             }, 4000);
-            
 
             await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
-              console.log("ipfsCID: ", ipfsCID)
-              console.log("fileName: ", fileName)
-              console.log("timeUploaded: ", timeUploaded)
-              console.log("fileOwner: ", fileOwner)
+              window.location.reload()
             }) 
         } else{
             console.log('ethereum object does not exist!')
