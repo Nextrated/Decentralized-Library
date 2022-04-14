@@ -33,9 +33,9 @@ const parseResult = (txnResult, fileType) => {
         for(let i = 0; i < ids.length; i++) {
             const file = {
                 cid: ids[i],
-                title: names[i], 
-                uploaded_at: timeConv(time[i]._hex), 
-                uploaded_by: owners[i],
+                name: names[i], 
+                time: timeConv(time[i]._hex), 
+                author: owners[i],
                 fileType: fileType
             }
             files.push(file)
