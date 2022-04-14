@@ -12,7 +12,7 @@ export default function FileCard(props) {
   const [address, setAddress] = useState("")
   const [loading, setloading] = useState(false)
   const addr = contractAddress.contractAddress;
-  const toast = useToast
+  const toast = useToast()
 
   const handleChange = () => {
     const val = document.getElementById("share").value
