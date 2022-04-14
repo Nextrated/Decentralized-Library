@@ -46,6 +46,17 @@ const Upload = () => {
       setFile (Buffer (reader.result));
     };
   };
+  const toast = useToast();
+
+  const showErrorToast = (message) => {
+    toast({
+      title:"Unsuccessful",
+      description: message,
+      status:"error",
+      duration:"5000",
+      isClosable:true
+    })
+  }
 
   const fileUpload = async () => {
     try {
@@ -62,15 +73,20 @@ const Upload = () => {
             setTimeout(() => {
               setSubmitted('')
               onClose()
-            }, 4000);
-
-            await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
-              window.location.reload()
-            }) 
+              toast({
+                title:"Successfull",
+                description:`File uploaded successfully`,
+                status:"success",
+                duration:"5000",
+                isClosable:true
+              })
+            }, 4000); 
         } else{
-            console.log('ethereum object does not exist!')
+          showErrorToast("Please ensure you are connected to metamask")
+          console.log('ethereum object does not exist!')
         }
     } catch (error) {
+      showErrorToast("An unexpected error occured")
       console.log (error);
     }
   };
@@ -85,10 +101,9 @@ const Upload = () => {
       let cid = created.path;
       setCid (cid);
       fileUpload ();
-      console.log ('filename', fileName);
-      console.log ('cid', cid);
-      console.log ('type', type);
     } catch (error) {
+      onClose()
+      showErrorToast("An unexpected error occured")
       console.log (error);
     }
   };
