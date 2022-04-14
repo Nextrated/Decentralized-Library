@@ -14,11 +14,10 @@ contract DecentralizedLibrary {
 
     mapping (address => mapping(string => FileDetail)) public privateCollection;
     mapping(address => string[]) private pKey;
-    // mapping(address => string[]) private userProfileFiles;
 
     mapping (address => mapping(string => FileDetail)) public sharedCollection;
     mapping(address => string[]) private sKey;
-    address[] public sharedAcess;
+    address[] public sharedAccess;
 
 
     mapping (string => bool) public fileExists;
@@ -31,7 +30,6 @@ contract DecentralizedLibrary {
         address fileOwner;
     } 
 
-    // FileDetail[] public fileDetailsArray;
 
     event FileUploaded(string ipfsCID, string fileName, uint timeUploaded , address fileOwner); 
 
@@ -215,12 +213,13 @@ contract DecentralizedLibrary {
         return(ids, names, time, owners);
     }
 
-    /// @notice Returns details about a specific file uploaded by msg.sender.
-    /// @param _fileName unique name of the file to be fetched
-    /// @return _ipfsCID file CID.
-    /// @return _filename file name.
-    /// @return _timeUploaded upload date of file
-    /// @return _fileOwner address of file uploader.
+    /// @notice Returns details about a specific file uploaded by a user.
+    /// @dev returns string type of user FileDetail struct parameters
+    /// @param _fileName Unique name of the file to be fetched
+    /// @return _ipfsCID File CID.
+    /// @return _filename File name.
+    /// @return _timeUploaded Upload date of file
+    /// @return _fileOwner Address of file uploader.
     function getOnePrivateFile(string memory _fileName) public view 
     returns (string memory _ipfsCID, string memory _filename, uint _timeUploaded, address _fileOwner) {
         require(fileExists[_fileName] == true, "File does not exist");
@@ -230,7 +229,8 @@ contract DecentralizedLibrary {
         _fileOwner = privateCollection[msg.sender][_fileName].fileOwner;
     }
 
-    /// @notice Shares a fileDetail struct with another address.
+    /// @notice Shares a private file to another user.
+    /// @dev Shares a fileDetail struct with another address.
     /// @param _to intended address to receive file.
     /// @param _fileName unique name of file to be shared.
     function sharePrivateFile(address _to, string memory _fileName) external {
@@ -241,7 +241,7 @@ contract DecentralizedLibrary {
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _filename , _timeUploaded, _fileOwner);
         sharedCollection[_to][_fileName] = fileDetails;
         sKey[_to].push(_fileName);
-        sharedAcess.push(_to);
+        sharedAccess.push(_to);
     }
 
 
