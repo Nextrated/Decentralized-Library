@@ -21,7 +21,7 @@ import {
 import {Buffer} from 'buffer'
 import {create} from 'ipfs-http-client'
 
-import abi from '../contracts/abi.json'
+import abi from "../contracts/abi.json"
 import contractAddress from '../contracts/contract_address.json'
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
@@ -60,7 +60,7 @@ const Upload = () => {
             // console.log("file name: ", fileName)
             // console.log("type: ", type)
 
-            const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type, { gasLimit:85000})
+            const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
             await fileUploadTxn.wait()
             setSubmitted('Upload successful!')
 
