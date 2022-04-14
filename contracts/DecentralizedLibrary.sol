@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 /// @title A decentralized library
-/// @author Team Ace [Blockgames] - Anyanwu Maureen, Johnmicheal, Phyf3, Chidera, Pearl, JNIC
+/// @author Team Ace [Blockgames] - Anyanwu Maureen(maura-dev), Johnmicheal(zendus), Philip(Phyf3), Chidera(derajohnson), Pearl(nextrated), JNIC, KingHolyHill(kinglighthill)
 /// @notice You can use this to contract store files in a decentralized and distributed system 
 /// @dev All function calls are currently implemented without side effects
 /// @custom:experimental This contract is a PoC.
@@ -14,7 +14,10 @@ contract DecentralizedLibrary {
 
     mapping (address => mapping(string => FileDetail)) public privateCollection;
     mapping(address => string[]) private pKey;
-    // mapping(address => string[]) private userProfileFiles;
+
+    mapping (address => mapping(string => FileDetail)) public sharedCollection;
+    mapping(address => string[]) private sKey;
+    address[] public sharedAccess;
 
 
     mapping (string => bool) public fileExists;
@@ -27,7 +30,6 @@ contract DecentralizedLibrary {
         address fileOwner;
     } 
 
-    // FileDetail[] public fileDetailsArray;
 
     event FileUploaded(string ipfsCID, string fileName, uint timeUploaded , address fileOwner); 
 
@@ -211,12 +213,13 @@ contract DecentralizedLibrary {
         return(ids, names, time, owners);
     }
 
-    /// @notice Returns details about a specific file uploaded by msg.sender.
-    /// @param _fileName unique name of the file to be fetched
-    /// @return _ipfsCID file CID.
-    /// @return _filename file name.
-    /// @return _timeUploaded upload date of file
-    /// @return _fileOwner address of file uploader.
+    /// @notice Returns details about a specific file uploaded by a user.
+    /// @dev returns string type of user FileDetail struct parameters
+    /// @param _fileName Unique name of the file to be fetched
+    /// @return _ipfsCID File CID.
+    /// @return _filename File name.
+    /// @return _timeUploaded Upload date of file
+    /// @return _fileOwner Address of file uploader.
     function getOnePrivateFile(string memory _fileName) public view 
     returns (string memory _ipfsCID, string memory _filename, uint _timeUploaded, address _fileOwner) {
         require(fileExists[_fileName] == true, "File does not exist");
@@ -226,7 +229,8 @@ contract DecentralizedLibrary {
         _fileOwner = privateCollection[msg.sender][_fileName].fileOwner;
     }
 
-    /// @notice Shares a fileDetail struct with another address.
+    /// @notice Shares a private file to another user.
+    /// @dev Shares a fileDetail struct with another address.
     /// @param _to intended address to receive file.
     /// @param _fileName unique name of file to be shared.
     function sharePrivateFile(address _to, string memory _fileName) external {
@@ -235,10 +239,32 @@ contract DecentralizedLibrary {
         uint _timeUploaded, address _fileOwner)  = getOnePrivateFile(_fileName);
         require(_fileOwner == msg.sender, "File share not authorized. Not Owner");
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _filename , _timeUploaded, _fileOwner);
-        privateCollection[_to][_fileName] = fileDetails;
-        pKey[_to].push(_fileName);
+        sharedCollection[_to][_fileName] = fileDetails;
+        sKey[_to].push(_fileName);
+        sharedAccess.push(_to);
     }
 
-    // function changeUploadType()
 
+    /// @notice Returns only the files shared to the current address.
+    /// @return _ipfsCID file CID.
+    /// @return _filename file name.
+    /// @return _timeUploaded upload date of file
+    /// @return _fileOwner address of file uploader/sender.
+    function getSharedFiles() public view 
+    returns (string[] memory,string[] memory, uint[] memory, address[] memory) {
+        uint len = sKey[msg.sender].length;
+        string [] memory ids = new string[](len);
+        string [] memory names = new string[](len);
+        uint [] memory time = new uint[](len);
+        address [] memory owners = new address [](len);
+
+        for (uint i = 0; i < len; ++i) {
+            string memory key = sKey[msg.sender][i];
+            ids[i] = sharedCollection[msg.sender][key].ipfsCID;
+            names[i] = sharedCollection[msg.sender][key].fileName;
+            time[i] = sharedCollection[msg.sender][key].timeUploaded;
+            owners[i] = sharedCollection[msg.sender][key].fileOwner;
+        }
+        return(ids, names, time, owners);
+    }
 }
