@@ -1,15 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useRef, useState, useEffect} from 'react';
 import {
   Box,
   Grid,
   useDisclosure,
   useColorModeValue,
-  Text,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody
+  Text
 } from '@chakra-ui/react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -17,7 +13,12 @@ import AllFiles from './pages/AllFiles';
 import PublicFiles from "./pages/PublicFiles";
 import PrivateFiles from "./pages/PrivateFiles";
 import SharedFiles from "./pages/SharedFiles";
-import Upload from './components/Upload'
+// import Upload from './components/Upload';
+import SampleUpload from "./components/SampleUpload";
+import { ethers } from "ethers";
+import abi from "./contracts/abi.json";
+import contractAddress from "./contracts/contract_address.json";
+import "./App.css";
 
 function App() {
   const {isOpen, onOpen, onClose}= useDisclosure();
@@ -29,6 +30,8 @@ function App() {
   const [showPublic, setshowPublic] = useState(false);
   const [showPrivate, setshowPrivate] = useState(false);
   const [showShared, setshowShared] = useState(false);
+  const addr = contractAddress.contractAddress;
+  const [ allFiles, setAllFiles ] = useState([]);
 
   // sets trhe current page to show all files
   const setAllPage = () => {
@@ -114,9 +117,38 @@ function App() {
       }
    }
 
+   const getAllFiles = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const library = new ethers.Contract(addr, abi.abi, provider);
+    const files = await library.getAllPublicUploads();
+    if(files[0].length > 0){
+      let newArr = [];
+      const timeConv = (t) => {
+        let x = t.toString(16) * 1000
+        x = new Date(+x);
+        return x.toDateString();
+      }
+      for(let i=0; i<files[0].length; i++){
+         const obj = {
+           cid: files[0][i],
+           name: files[1][i],
+           time: timeConv((files[2][i])._hex),
+           author: files[3][i],
+           fileType: "Public"
+         } 
+         newArr.push(obj);
+      }
+      setAllFiles(newArr);
+    }
+    
+    //console.log(files);
+  }
+
     useEffect (() => {
       setIsConnected(false)
       checkIfWalletIsConnected ();
+      getAllFiles();
     }, [])
 
   return (
@@ -144,10 +176,10 @@ function App() {
               {showPublic ? "Public files" : null}
               {showPrivate ? "Private files" : null}
             </Text>
-
-            <Upload />
+            <SampleUpload/>
+             {/* <Upload /> */}
           </Box>
-          {showAll ? <AllFiles /> : null}
+          {showAll ? <AllFiles files={allFiles}/> : null}
           {showPrivate ? <PrivateFiles /> : null}
           {showPublic ? <PublicFiles /> : null}
           {showShared ? <SharedFiles /> : null}

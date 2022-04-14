@@ -30,7 +30,7 @@ export default function FileCard(props) {
               <Text>{uploadedAt}</Text>
             </Box>
             <Box d="flex">
-            <Text color="gray.500" mr={3}>Uploaded by:</Text>
+            <Text color="gray.500" mr={3}>By:</Text>
               <Text>{uploadedBy}</Text>
             </Box>
             <Box mt={3} cursor="pointer">
