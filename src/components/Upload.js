@@ -26,7 +26,6 @@ import contractAddress from '../contracts/contract_address.json'
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
-const contractAddress = '0xF66E577305EE88B655589d0E5E0c211422b31b0a'
 
 const Upload = () => {
   const {isOpen, onOpen, onClose} = useDisclosure ();
@@ -45,9 +44,7 @@ const Upload = () => {
     const reader = new window.FileReader()
     reader.readAsArrayBuffer(data);
     reader.onloadend = () => {
-      const f = Buffer(reader.result)
-      console.log("File: ", f) 
-      setFile(f)
+      setFile(Buffer(reader.result))
     }
   }
 
@@ -59,26 +56,27 @@ const Upload = () => {
             const signer = provider.getSigner();
             const fileUploadContract = new ethers.Contract(contractAddress.contractAddress, abi.abi, signer)
 
-            console.log("CID: ", cid)
-            console.log("file name: ", fileName)
-            console.log("type: ", type)
+            // console.log("CID: ", cid)
+            // console.log("file name: ", fileName)
+            // console.log("type: ", type)
 
-            const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
+            const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type, { gasLimit:85000})
             await fileUploadTxn.wait()
+            setSubmitted('Upload successful!')
 
+            setTimeout(() => {
+              setSubmitted('')
+            }, 4000);
             
 
-            await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
-              setSubmitted('Upload successful!')
-              setTimeout(() => {
-                setSubmitted('')
-              }, 4000);
-              
-              console.log("ipfsCID: ", ipfsCID)
-              console.log("fileName: ", fileName)
-              console.log("timeUploaded: ", timeUploaded)
-              console.log("fileOwner: ", fileOwner)
-            })        
+            // await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
+           
+           
+            //   console.log("ipfsCID: ", ipfsCID)
+            //   console.log("fileName: ", fileName)
+            //   console.log("timeUploaded: ", timeUploaded)
+            //   console.log("fileOwner: ", fileOwner)
+            // })        
             
 
         } else{
@@ -94,8 +92,13 @@ const Upload = () => {
       setSubmitted('uploading file...')
       try {
         const created = await client.add(file)
-       setCid(created.cid.toString())
+        console.log('path',created.path)
+      let cid =  created.path
+       setCid(cid)
        fileUpload()
+      console.log('filename', fileName)
+      console.log('cid', cid)
+      console.log('type', type)
 
       } catch (error) {
         console.log(error)
