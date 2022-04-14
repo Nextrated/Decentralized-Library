@@ -10,6 +10,7 @@ export default function PublicFiles() {
   const fileType = "Public"
 
   const getFiles = useCallback(async () => {
+    console.log("Hi")
     try {
       const {ethereum} = window
 
@@ -23,11 +24,12 @@ export default function PublicFiles() {
     } catch (error) {
         console.log(error)
     }
-  }, [])
+  }, [publicFiles])
   
   useEffect(() => {
+    console.log("Hello")
     getFiles()
-  }, [])
+  }, [publicFiles])
 
   return (
     <Box d="flex" flexWrap="wrap" px={{base:5 , md:10, lg:12 }} mt={5} mx="auto" justifyContent="space-around">

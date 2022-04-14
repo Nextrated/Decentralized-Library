@@ -26,7 +26,7 @@ import contractAddress from '../contracts/contract_address.json'
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
-const contractAddress = '0xF66E577305EE88B655589d0E5E0c211422b31b0a'
+// const contractAddress = '0xF66E577305EE88B655589d0E5E0c211422b31b0a'
 
 const Upload = () => {
   const {isOpen, onOpen, onClose} = useDisclosure ();
@@ -73,7 +73,7 @@ const Upload = () => {
               setTimeout(() => {
                 setSubmitted('')
               }, 4000);
-              
+
               console.log("ipfsCID: ", ipfsCID)
               console.log("fileName: ", fileName)
               console.log("timeUploaded: ", timeUploaded)

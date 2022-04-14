@@ -24,7 +24,7 @@ const getAccount = async (ethereum) => {
     return null
 }
 
-const parseResult = (txnResult, condition) => {
+const parseResult = (txnResult) => {
     const ids = txnResult[0]
     
     const names = txnResult[1]
@@ -34,16 +34,14 @@ const parseResult = (txnResult, condition) => {
     let files = []
   
     for(let i = 0; i < ids.length; i++) {
-        if (condition(owners[i])) {
-            const file = {
-                cid: ids[i],
-                title: names[i], 
-                uploaded_at: new Date(time[i].toBigInt()), 
-                uploaded_by: owners[i],
-            }
-          
-            files.push(file)
+        const file = {
+            cid: ids[i],
+            title: names[i], 
+            uploaded_at: new Date(time[i].toBigInt()), 
+            uploaded_by: owners[i],
         }
+      
+        files.push(file)
     }
 
     return files
@@ -61,9 +59,7 @@ export const getPublicFiles = async (ethereum) => {
     const contract = await getContract(ethereum)
     const txnResult = await contract.getAllPublicUploads()
 
-    const publicFiles = parseResult(txnResult, (owner) => {
-        return true;
-    })
+    const publicFiles = parseResult(txnResult)
 
     // const ids = txnResult[0]
     
@@ -91,11 +87,7 @@ export const getPrivateFiles = async (ethereum) => {
     const contract = await getContract(ethereum)
     const txnResult = await contract.getAllPrivateUploads()
 
-    const account = await getAccount(ethereum)
-
-    const privateFiles = parseResult(txnResult, (owner) => {
-        return owner === account;
-    })
+    const privateFiles = parseResult(txnResult)
 
     // const ids = txnResult[0]
     
@@ -125,13 +117,9 @@ export const getPrivateFiles = async (ethereum) => {
 
 export const getSharedFiles = async (ethereum) => {
     const contract = await getContract(ethereum)
-    const txnResult = await contract.getAllPrivateUploads()
+    const txnResult = await contract.getSharedFiles()
 
-    const account = await getAccount(ethereum)
-
-    const sharedFiles = parseResult(txnResult, (owner) => {
-        return owner === account;
-    })
+    const sharedFiles = parseResult(txnResult)
 
     // const ids = txnResult[0]
     
