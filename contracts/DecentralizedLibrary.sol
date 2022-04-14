@@ -47,7 +47,7 @@ contract DecentralizedLibrary {
     /// @dev    The params are stored on the blockchain on function call, lookups can be done 
     function fileUpload(string memory _ipfsCID, string memory _fileName, uint _uploadType) 
     public { 
-        require(fileExists[_ipfsCID] == false, "File with this CID already exists.");
+       // require(fileExists[_ipfsCID] == false, "File with this CID already exists.");
         require(fileExists[_fileName] == false, "File with this Name already exists, Rename.");
 
         //initialising our struct with data
