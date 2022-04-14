@@ -1,9 +1,11 @@
 import { Box, Icon, Text, Popover, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Divider } from '@chakra-ui/react'
 import React from 'react';
 import { FiMoreHorizontal } from "react-icons/fi";
-import {AiOutlineCloudDownload, AiFillEye, AiOutlineShareAlt} from "react-icons/ai";
+import {AiOutlineCloudDownload, AiFillEye } from "react-icons/ai";
+import ShareForm from './ShareForm';
 
-export default function FileCardActions({isPrivate}) {
+export default function FileCardActions({isPrivate, address, handleChange, loading, submitAddress}) {
+
   return (
     <Box>
         <Popover placement="right">
@@ -22,9 +24,13 @@ export default function FileCardActions({isPrivate}) {
                         <Text d="flex" alignItems="center"><AiOutlineCloudDownload/>&nbsp; &nbsp; Download</Text>
                     </Box>
                     <Divider d={isPrivate ? "block" : "none"}/>
-                    <Box px={5} py={3} d={isPrivate ? "block" : "none"}>
-                        <Text d="flex" alignItems="center"><AiOutlineShareAlt mr={3}/>&nbsp; &nbsp; Share</Text>
-                    </Box>
+                    <ShareForm
+                        isPrivate={isPrivate}
+                        address={address}
+                        handleChange={handleChange}
+                        loading={loading}
+                        submitAddress={submitAddress}
+                    />
                     
                 </PopoverBody>
             </PopoverContent>

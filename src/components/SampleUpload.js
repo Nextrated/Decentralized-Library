@@ -53,7 +53,7 @@ const SampleUpload = () => {
             await provider.send("eth_requestAccounts", []);
             const signer = await provider.getSigner();
             const fileUploadContract = new ethers.Contract(addr, abi.abi, signer)
-            const fileUploadTxn = await fileUploadContract.fileUpload(hash, fileName, type)
+            const fileUploadTxn = await fileUploadContract.fileUpload(hash, fileName, parseInt(type))
             await fileUploadTxn.wait()
           setSubmitting(false)
           toast({

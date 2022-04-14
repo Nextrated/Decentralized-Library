@@ -16,28 +16,28 @@ import {
   HStack,
   ModalFooter,
   useToast,
-  toast
+  Text
 } from '@chakra-ui/react';
 import {Buffer} from 'buffer'
 import {create} from 'ipfs-http-client'
 
-import abi from '../contracts/abi.json'
+import abi from "../contracts/abi.json"
+import contractAddress from '../contracts/contract_address.json'
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
-const contractAddress = '0x60Cf639967407503958fd3d5205fa93dd1f6522D'
 
 const Upload = () => {
   const {isOpen, onOpen, onClose} = useDisclosure ();
   const initialRef = useRef ();
   const finalRef = useRef ();
   const [fileName, setFileName] = useState('')
-  const [type, setType] = useState('')
+  const [type, setType] = useState('0')
   const [file, setFile] = useState(null)
   const [fileDetails, setFileDetails] = useState('')
   const [cid, setCid] = useState('')
-  const [isTxnDone, setIsTxnDone] = useState(false)
-  const [submitted, setSubmitted] = useState('false')
+  const [submitted, setSubmitted] = useState('')
+  const toast = useToast()
   const captureFile = (e) => {
     const data = e.target.files[0]
     setFileDetails(data)
@@ -54,12 +54,32 @@ const Upload = () => {
         if(ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
-            const fileUploadContract = new ethers.Contract(contractAddress, abi.abi, signer)
+            const fileUploadContract = new ethers.Contract(contractAddress.contractAddress, abi.abi, signer)
+
+            // console.log("CID: ", cid)
+            // console.log("file name: ", fileName)
+            // console.log("type: ", type)
+
             const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
             await fileUploadTxn.wait()
-          setSubmitted(false)
+            setSubmitted('Upload successful!')
 
-        }else{
+            setTimeout(() => {
+              setSubmitted('')
+            }, 4000);
+            
+
+            // await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
+           
+           
+            //   console.log("ipfsCID: ", ipfsCID)
+            //   console.log("fileName: ", fileName)
+            //   console.log("timeUploaded: ", timeUploaded)
+            //   console.log("fileOwner: ", fileOwner)
+            // })        
+            
+
+        } else{
             console.log('ethereum object does not exist!')
         }
     } catch (error) {
@@ -67,26 +87,22 @@ const Upload = () => {
     }
 }
 
-
-
-
-
-
-
-
   const submitUpload = async (e) => {
       e.preventDefault()
-      setSubmitted(true)
+      setSubmitted('uploading file...')
       try {
         const created = await client.add(file)
-       setCid(created.cid.toString())
+        console.log('path',created.path)
+      let cid =  created.path
+       setCid(cid)
        fileUpload()
+      console.log('filename', fileName)
+      console.log('cid', cid)
+      console.log('type', type)
 
       } catch (error) {
         console.log(error)
       }
-
-
   }
   return (
     <div>
@@ -126,7 +142,7 @@ const Upload = () => {
                 </HStack>
               </RadioGroup>
               <ModalFooter>
-                
+                <Text mr={2} color={'green.500'}>{submitted}</Text>
                 <Button colorScheme="blue" mr={3} type='submit'>
                   Submit
                 </Button>

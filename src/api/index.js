@@ -14,10 +14,147 @@ const getSigner = async (ethereum) => {
     return provider.getSigner()
 }
 
+const getAccount = async (ethereum) => {
+    const accounts = await ethereum.request ({method: 'eth_accounts'});
+        
+    if (accounts.length !== 0) {
+          return accounts[0];
+    }
+
+    return null
+}
+
+const parseResult = (txnResult, condition) => {
+    const ids = txnResult[0]
+    
+    const names = txnResult[1]
+    const time = txnResult[2]
+    const owners = txnResult[3]
+  
+    let files = []
+  
+    for(let i = 0; i < ids.length; i++) {
+        if (condition(owners[i])) {
+            const file = {
+                cid: ids[i],
+                title: names[i], 
+                uploaded_at: new Date(time[i].toBigInt()), 
+                uploaded_by: owners[i],
+            }
+          
+            files.push(file)
+        }
+    }
+
+    return files
+}
+
 export const getContract = async (ethereum) => {
     const signer = await getSigner(ethereum)
 
-    const contract = new ethers.Contract(contractAddress.contractAddress, contractAbi, signer)
+    const contract = new ethers.Contract(contractAddress.contractAddress, contractAbi.abi, signer)
 
     return contract
+}
+
+export const getPublicFiles = async (ethereum) => {
+    const contract = await getContract(ethereum)
+    const txnResult = await contract.getAllPublicUploads()
+
+    const publicFiles = parseResult(txnResult, (owner) => {
+        return true;
+    })
+
+    // const ids = txnResult[0]
+    
+    // const names = txnResult[1]
+    // const time = txnResult[2]
+    // const owners = txnResult[3]
+  
+    // let publicFiles = []
+  
+    // for(let i = 0; i < ids.length; i++) {
+    //     const file = {
+    //         cid: ids[i],
+    //         title: names[i], 
+    //         uploaded_at: time[i].toBigInt(), 
+    //         uploaded_by: owners[i],
+    //     }
+      
+    //     publicFiles.push(file)
+    // }
+
+    return publicFiles
+}
+
+export const getPrivateFiles = async (ethereum) => {
+    const contract = await getContract(ethereum)
+    const txnResult = await contract.getAllPrivateUploads()
+
+    const account = await getAccount(ethereum)
+
+    const privateFiles = parseResult(txnResult, (owner) => {
+        return owner === account;
+    })
+
+    // const ids = txnResult[0]
+    
+    // const names = txnResult[1]
+    // const time = txnResult[2]
+    // const owners = txnResult[3]
+  
+    // let privateFiles = []
+  
+    // const account = await getAccount(ethereum)
+
+    // for(let i = 0; i < ids.length; i++) {
+    //     if (owners[i] === account) {
+    //         const file = {
+    //             cid: ids[i],
+    //             title: names[i], 
+    //             uploaded_at: time[i].toBigInt(), 
+    //             uploaded_by: owners[i],
+    //         }
+            
+    //         privateFiles.push(file)
+    //     }
+    // }
+
+    return privateFiles
+}
+
+export const getSharedFiles = async (ethereum) => {
+    const contract = await getContract(ethereum)
+    const txnResult = await contract.getAllPrivateUploads()
+
+    const account = await getAccount(ethereum)
+
+    const sharedFiles = parseResult(txnResult, (owner) => {
+        return owner === account;
+    })
+
+    // const ids = txnResult[0]
+    
+    // const names = txnResult[1]
+    // const time = txnResult[2]
+    // const owners = txnResult[3]
+  
+    // let sharedFiles = []
+
+    // const account = await getAccount(ethereum)
+  
+    // for(let i = 0; i < ids.length; i++) {
+    //     if (owners[i] !== account) {
+    //         const file = {
+    //             cid: ids[i],
+    //             title: names[i], 
+    //             uploaded_at: time[i].toBigInt(), 
+    //             uploaded_by: owners[i],
+    //         }
+
+    //         sharedFiles.push(file)
+    //     }
+    // }
+
+    return sharedFiles
 }

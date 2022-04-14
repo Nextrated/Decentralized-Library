@@ -13,8 +13,8 @@ import AllFiles from './pages/AllFiles';
 import PublicFiles from "./pages/PublicFiles";
 import PrivateFiles from "./pages/PrivateFiles";
 import SharedFiles from "./pages/SharedFiles";
-// import Upload from './components/Upload';
-import SampleUpload from "./components/SampleUpload";
+import Upload from './components/Upload';
+// import SampleUpload from "./components/SampleUpload";
 import { ethers } from "ethers";
 import abi from "./contracts/abi.json";
 import contractAddress from "./contracts/contract_address.json";
@@ -31,6 +31,9 @@ function App() {
   const [showPrivate, setshowPrivate] = useState(false);
   const [showShared, setshowShared] = useState(false);
   const addr = contractAddress.contractAddress;
+  const [ publicFiles, setPublicFiles ] = useState([]);
+  const [ privateFiles, setPrivateFiles ] = useState([]);
+  const [ sharedFiles, setSharedFiles ] = useState([]);
   const [ allFiles, setAllFiles ] = useState([]);
 
   // sets trhe current page to show all files
@@ -117,7 +120,9 @@ function App() {
       }
    }
 
-   const getAllFiles = async () => {
+   
+//function to get all public files
+   const getPublicFiles = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
     const library = new ethers.Contract(addr, abi.abi, provider);
@@ -139,16 +144,90 @@ function App() {
          } 
          newArr.push(obj);
       }
-      setAllFiles(newArr);
+      setPublicFiles(newArr);
+    } else{
+      setPublicFiles([]);
     }
     
-    //console.log(files);
   }
+
+  //function to get all private files
+  const getPrivateFiles = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = await provider.getSigner();
+    const library = new ethers.Contract(addr, abi.abi, signer);
+    const files = await library.getAllPrivateUploads();
+    if(files[0].length > 0){
+      let newArr = [];
+      const timeConv = (t) => {
+        let x = t.toString(16) * 1000
+        x = new Date(+x);
+        return x.toDateString();
+      }
+      for(let i=0; i<files[0].length; i++){
+         const obj = {
+           cid: files[0][i],
+           name: files[1][i],
+           time: timeConv((files[2][i])._hex),
+           author: files[3][i],
+           fileType: "Private"
+         } 
+         newArr.push(obj);
+      }
+      setPrivateFiles(newArr);
+    } else{
+      setPrivateFiles([])
+    }
+  }
+
+  //function to get all shared files
+   const getSharedFiles = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = await provider.getSigner();
+    const library = new ethers.Contract(addr, abi.abi, signer);
+    const files = await library.getSharedFiles();
+    if(files[0].length > 0){
+      let newArr = [];
+      const timeConv = (t) => {
+        let x = t.toString(16) * 1000
+        x = new Date(+x);
+        return x.toDateString();
+      }
+      for(let i=0; i<files[0].length; i++){
+         const obj = {
+           cid: files[0][i],
+           name: files[1][i],
+           time: timeConv((files[2][i])._hex),
+           author: files[3][i],
+           fileType: "Shared"
+         } 
+         newArr.push(obj);
+      }
+      setSharedFiles(newArr);
+    } else{
+      setSharedFiles([])
+    }
+  }
+
+  //function to get all files
+
+  useEffect(() => {
+    var newArr = publicFiles.concat(privateFiles, sharedFiles);
+    setAllFiles(newArr);
+  }, [publicFiles, privateFiles,sharedFiles])
+  
 
     useEffect (() => {
       setIsConnected(false)
       checkIfWalletIsConnected ();
-      getAllFiles();
+      async function fetchFiles(){
+        await getPublicFiles();
+        await getPrivateFiles();
+        await getSharedFiles();
+      }
+      fetchFiles();
     }, [])
 
   return (
@@ -159,6 +238,8 @@ function App() {
           currentAccount={currentAccount} 
           toggleWallet={connectWallet}
         />
+        {console.log(privateFiles)}
+        {console.log(sharedFiles)}
         <Sidebar 
           isOpen={isOpen} 
           onClose={onClose} 
@@ -176,13 +257,13 @@ function App() {
               {showPublic ? "Public files" : null}
               {showPrivate ? "Private files" : null}
             </Text>
-            <SampleUpload/>
-             {/* <Upload /> */}
+            {/* <SampleUpload/> */}
+             <Upload />
           </Box>
           {showAll ? <AllFiles files={allFiles}/> : null}
-          {showPrivate ? <PrivateFiles /> : null}
-          {showPublic ? <PublicFiles /> : null}
-          {showShared ? <SharedFiles /> : null}
+          {showPrivate ? <PrivateFiles privateFiles={privateFiles}/> : null}
+          {showPublic ? <PublicFiles publicFiles={publicFiles}/> : null}
+          {showShared ? <SharedFiles sharedFiles={sharedFiles}/> : null}
         </Grid>
       </Box>
   );
