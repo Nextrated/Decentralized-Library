@@ -17,6 +17,7 @@ contract DecentralizedLibrary {
 
     mapping (address => mapping(string => FileDetail)) public sharedCollection;
     mapping(address => string[]) private sKey;
+    address[] public sharedAccess;
 
 
     mapping (string => bool) public fileExists;
@@ -37,6 +38,12 @@ contract DecentralizedLibrary {
     /// @notice Makes sure the current address is the only owner -> for private files functions
     constructor(){
         owner = msg.sender;
+    }
+
+    /// @notice Makes sure the current address is the only owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only current address can do this");
+        _;
     }
 
 
@@ -234,6 +241,7 @@ contract DecentralizedLibrary {
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _filename , _timeUploaded, _fileOwner);
         sharedCollection[_to][_fileName] = fileDetails;
         sKey[_to].push(_fileName);
+        sharedAccess.push(_to);
     }
 
 
