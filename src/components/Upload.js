@@ -55,10 +55,6 @@ const Upload = () => {
             const signer = provider.getSigner();
             const fileUploadContract = new ethers.Contract(contractAddress.contractAddress, abi.abi, signer)
 
-            // console.log("CID: ", cid)
-            // console.log("file name: ", fileName)
-            // console.log("type: ", type)
-
             const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
             await fileUploadTxn.wait()
             setSubmitted('Upload successful!')
@@ -68,17 +64,12 @@ const Upload = () => {
             }, 4000);
             
 
-            // await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
-            //   setSubmitted('Upload successful!')
-            //   setTimeout(() => {
-            //     setSubmitted('')
-            //   }, 4000);
-
-            //   console.log("ipfsCID: ", ipfsCID)
-            //   console.log("fileName: ", fileName)
-            //   console.log("timeUploaded: ", timeUploaded)
-            //   console.log("fileOwner: ", fileOwner)
-            // }) 
+            await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
+              console.log("ipfsCID: ", ipfsCID)
+              console.log("fileName: ", fileName)
+              console.log("timeUploaded: ", timeUploaded)
+              console.log("fileOwner: ", fileOwner)
+            }) 
         } else{
             console.log('ethereum object does not exist!')
         }
