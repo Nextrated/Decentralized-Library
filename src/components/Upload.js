@@ -36,7 +36,7 @@ const Upload = () => {
   const [fileDetails, setFileDetails] = useState ('');
   const [cid, setCid] = useState ('');
   const [submitted, setSubmitted] = useState ('');
-  const toast = useToast ();
+  const [isSubmitted, setIsSubmitted] = useState(false)
   const captureFile = e => {
     const data = e.target.files[0];
     setFileDetails (data);
@@ -54,30 +54,15 @@ const Upload = () => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const fileUploadContract = new ethers.Contract(contractAddress.contractAddress, abi.abi, signer)
-
-            // console.log("CID: ", cid)
-            // console.log("file name: ", fileName)
-            // console.log("type: ", type)
-
-            const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type, {gasLimit: 3000000})
+            const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
             await fileUploadTxn.wait()
             setSubmitted('Upload successful!')
-
+            setIsSubmitted(false)
+            
             setTimeout(() => {
               setSubmitted('')
+              onClose()
             }, 4000);
-            
-
-            // await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
-           
-           
-            //   console.log("ipfsCID: ", ipfsCID)
-            //   console.log("fileName: ", fileName)
-            //   console.log("timeUploaded: ", timeUploaded)
-            //   console.log("fileOwner: ", fileOwner)
-            // })        
-            
-
         } else{
             console.log('ethereum object does not exist!')
         }
@@ -88,7 +73,8 @@ const Upload = () => {
 
   const submitUpload = async e => {
     e.preventDefault ();
-    setSubmitted ('uploading file...');
+    setIsSubmitted(true)
+    
     try {
       const created = await client.add (file);
       console.log ('path', created.path);
@@ -145,9 +131,12 @@ const Upload = () => {
               </RadioGroup>
               <ModalFooter>
                 <Text mr={2} color={'green.500'}>{submitted}</Text>
-                <Button colorScheme="blue" mr={3} type="submit">
+                {isSubmitted === false ?  <Button colorScheme="blue" mr={3} type="submit">
                   Submit
-                </Button>
+                </Button> : <Button colorScheme="blue" mr={3} type="submit" isLoading loadingText='Submitting'>
+                  Submit
+                </Button>}
+               
                 <Button onClick={onClose}>Cancel</Button>
               </ModalFooter>
             </form>
