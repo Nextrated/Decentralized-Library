@@ -21,8 +21,8 @@ import {
 import {Buffer} from 'buffer';
 import {create} from 'ipfs-http-client';
 
-import abi from '../contracts/abi.json';
-import contractAddress from '../contracts/contract_address.json';
+import abi from "../contracts/abi.json"
+import contractAddress from '../contracts/contract_address.json'
 
 const client = create ('https://ipfs.infura.io:5001/api/v0');
 
@@ -49,43 +49,38 @@ const Upload = () => {
 
   const fileUpload = async () => {
     try {
-      const {ethereum} = window;
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider (ethereum);
-        const signer = provider.getSigner ();
-        const fileUploadContract = new ethers.Contract (
-          contractAddress.contractAddress,
-          abi.abi,
-          signer
-        );
+        const {ethereum} = window
+        if(ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const fileUploadContract = new ethers.Contract(contractAddress.contractAddress, abi.abi, signer)
 
-        // console.log("CID: ", cid)
-        // console.log("file name: ", fileName)
-        // console.log("type: ", type)
+            // console.log("CID: ", cid)
+            // console.log("file name: ", fileName)
+            // console.log("type: ", type)
 
-        const fileUploadTxn = await fileUploadContract.fileUpload (
-          cid,
-          fileName,
-          type,
-          {gasLimit: 300000}
-        );
-        await fileUploadTxn.wait ();
-        setSubmitted ('Upload successful!');
+            const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type, {gasLimit: 3000000})
+            await fileUploadTxn.wait()
+            setSubmitted('Upload successful!')
 
-        setTimeout (() => {
-          setSubmitted ('');
-        }, 4000);
+            setTimeout(() => {
+              setSubmitted('')
+            }, 4000);
+            
 
-        // await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
+            // await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
+           
+           
+            //   console.log("ipfsCID: ", ipfsCID)
+            //   console.log("fileName: ", fileName)
+            //   console.log("timeUploaded: ", timeUploaded)
+            //   console.log("fileOwner: ", fileOwner)
+            // })        
+            
 
-        //   console.log("ipfsCID: ", ipfsCID)
-        //   console.log("fileName: ", fileName)
-        //   console.log("timeUploaded: ", timeUploaded)
-        //   console.log("fileOwner: ", fileOwner)
-        // })
-      } else {
-        console.log ('ethereum object does not exist!');
-      }
+        } else{
+            console.log('ethereum object does not exist!')
+        }
     } catch (error) {
       console.log (error);
     }
