@@ -1,9 +1,9 @@
 import React, { useState} from 'react'
 import { Box, Image, Badge, Text, useColorModeValue, useToast } from "@chakra-ui/react";
 import FileCardActions from './FileCardActions';
-import abi from "../contracts/abi.json";
 import contractAddress from "../contracts/contract_address.json";
-import { ethers } from "ethers"
+
+import { shareFile } from '../api';
 
 
 export default function FileCard(props) {
@@ -24,12 +24,7 @@ export default function FileCard(props) {
       try {
           const {ethereum} = window
           if(ethereum) {
-              const provider = new ethers.providers.Web3Provider(ethereum);
-              await provider.send("eth_requestAccounts", []);
-              const signer = await provider.getSigner();
-              const library = new ethers.Contract(addr, abi.abi, signer)
-              const fileUploadTxn = await library.sharePrivateFile(address, title)
-              await fileUploadTxn.wait()
+            await shareFile(ethereum, address, title)
             setloading(false)
             toast({
               title:"Successfull",

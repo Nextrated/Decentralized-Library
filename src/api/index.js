@@ -95,3 +95,9 @@ export const fetchSharedFiles = async (ethereum) => {
         return []
     }
 }
+
+export const shareFile = async (ethereum, address, title) => {
+    const contract = await getContract(ethereum)
+    const txn = await contract.sharePrivateFile(address, title)
+    await txn.wait()
+}
