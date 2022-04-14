@@ -4,7 +4,7 @@ import {
   Box,
   Grid,
   useDisclosure,
-  useColorModeValue,
+  //useColorModeValue,
   Text
 } from '@chakra-ui/react';
 import Header from './components/Header';
@@ -23,7 +23,7 @@ import "./App.css";
 function App() {
   const {isOpen, onOpen, onClose}= useDisclosure();
   const btnRef = useRef();
-  const bg = useColorModeValue("white", "primary");
+  // const bg = useColorModeValue("white", "primary");
   const [currentAccount, setCurrentAccount] = useState ('');
   const [isConnected, setIsConnected] = useState(false);
   const [showAll, setshowAll] = useState(true);
@@ -231,7 +231,7 @@ function App() {
     }, [])
 
   return (
-      <Box textAlign="center" fontSize="xl" bg={bg}>
+      <Box textAlign="center" fontSize="xl">
         <Header 
           showSidebar={onOpen} 
           isConnected={isConnected} 
