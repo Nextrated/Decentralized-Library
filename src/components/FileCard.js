@@ -71,13 +71,10 @@ export default function FileCard(props) {
       mb={5}
       borderRadius="lg"
       minW={{ base: '100%', md: '45%', lg: '30%' }}
-      // h={{base: "75%"}}
       overflow="hidden"
       bg={bg}
       boxShadow="lg"
       cursor="pointer"
-      // minWidth={"300px"}
-      //{cid === "" && file.length===0 ? "dp.png" :`https://ipfs.io/ipfs/${cid}/${file[0].name}`}
     >
       <Image
         src="dp.png"

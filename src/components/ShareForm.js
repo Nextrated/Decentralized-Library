@@ -51,7 +51,12 @@ export default function ShareForm({isPrivate, address, handleChange, loading, su
                 <Button 
                     colorScheme="blue" 
                     mr={3} 
-                    onClick={submitAddress}
+                    onClick={
+                      async () => {
+                        await submitAddress()
+                        onClose()
+                      }
+                    }
                     isLoading={loading ? true : false}>
                   Submit
                 </Button>

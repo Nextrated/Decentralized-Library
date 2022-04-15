@@ -1,10 +1,11 @@
 import { Box, Button, Grid, Input, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { fetchPrivateFiles, fetchPublicFiles, fetchSharedFiles } from '../api';
+import { fetchPrivateFiles, fetchPublicFiles, fetchSharedFiles, fetchMyPublicFiles } from '../api';
 import Upload from '../components/Upload';
 import AllFiles from './AllFiles';
 import PrivateFiles from './PrivateFiles';
 import PublicFiles from './PublicFiles';
+import MyPublicFiles from './MyPublicFiles';
 import SearchFiles from './SearchFiles';
 import SharedFiles from './SharedFiles';
 
@@ -12,12 +13,14 @@ export default function Content({
   showAll,
   showShared,
   showPublic,
+  showMyPublic,
   showPrivate,
   showSearchPage,
   setSearchPage,
   showAllFilesPage,
 }) {
   const [publicFiles, setPublicFiles] = useState([]);
+  const [myPublicFiles, setMyPublicFiles] = useState([]);
   const [privateFiles, setPrivateFiles] = useState([]);
   const [sharedFiles, setSharedFiles] = useState([]);
   const [searchedFiles, setSearchedFiles] = useState([]);
@@ -44,6 +47,12 @@ export default function Content({
     setPublicFiles(files);
   };
 
+  //function to get all user's public files
+  const getMyPublicFiles = async () => {
+    const files = await fetchMyPublicFiles(window.ethereum);
+    setMyPublicFiles(files);
+  };
+
   //function to get all private files
   const getPrivateFiles = async () => {
     const files = await fetchPrivateFiles(window.ethereum);
@@ -67,6 +76,7 @@ export default function Content({
   useEffect(() => {
     async function fetchFiles() {
       await getPublicFiles();
+      await getMyPublicFiles();
       await getPrivateFiles();
       await getSharedFiles();
     }
@@ -105,10 +115,11 @@ export default function Content({
 
       <Box mt="30px" d="flex" justifyContent="space-between" px={10}>
         <Text fontSize={{ base: 'xl', md: '2xl', lg: '3xl' }} fontWeight="700">
-          {showAll ? 'All files' : null}
-          {showShared ? 'Shared with me' : null}
-          {showPublic ? 'Public files' : null}
-          {showPrivate ? 'Private files' : null}
+          {showAll ? 'All Files' : null}
+          {showShared ? 'Shared With Me' : null}
+          {showPublic ? 'Public Files' : null}
+          {showMyPublic ? 'My Public Files' : null}
+          {showPrivate ? 'Private Files' : null}
         </Text>
         {/* <SampleUpload/> */}
         <Upload />
@@ -116,6 +127,7 @@ export default function Content({
       {showAll ? <AllFiles files={allFiles} /> : null}
       {showPrivate ? <PrivateFiles privateFiles={privateFiles} /> : null}
       {showPublic ? <PublicFiles publicFiles={publicFiles} /> : null}
+      {showMyPublic ? <MyPublicFiles myPublicFiles={myPublicFiles} /> : null}
       {showShared ? <SharedFiles sharedFiles={sharedFiles} /> : null}
       {showSearchPage ? (
         <SearchFiles files={searchedFiles} showAll={showAllFilesPage} />

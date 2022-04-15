@@ -22,6 +22,7 @@ function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [showAll, setshowAll] = useState(true);
   const [showPublic, setshowPublic] = useState(false);
+  const [showMyPublic, setshowMyPublic] = useState(false);
   const [showPrivate, setshowPrivate] = useState(false);
   const [showShared, setshowShared] = useState(false);
   const [showSearchPage, setShowSearchPage ] = useState(false)
@@ -31,6 +32,7 @@ function App() {
   const setSearchPage = () => {
     setShowSearchPage(true)
     setshowPublic(false);
+    setshowMyPublic(false);
     setshowPrivate(false);
     setshowShared(false);
     setshowAll(false);
@@ -40,6 +42,7 @@ function App() {
   const setAllPage = () => {
     setShowSearchPage(false)
     setshowPublic(false);
+    setshowMyPublic(false);
     setshowPrivate(false);
     setshowShared(false);
     setshowAll(true);
@@ -49,6 +52,7 @@ function App() {
   const setSharedPage = () => {
     setShowSearchPage(false)
     setshowPublic(false);
+    setshowMyPublic(false);
     setshowPrivate(false);
     setshowShared(true);
     setshowAll(false);
@@ -58,6 +62,7 @@ function App() {
   const setPrivatePage = () => {
     setShowSearchPage(false)
     setshowPublic(false);
+    setshowMyPublic(false);
     setshowPrivate(true);
     setshowShared(false);
     setshowAll(false);
@@ -66,9 +71,21 @@ function App() {
   // sets the current page to show public files
   const setPublicPage = () => {
     setshowPublic(true);
+    setshowMyPublic(false);
     setshowPrivate(false);
     setshowShared(false);
     setshowAll(false);
+    setShowSearchPage(false)
+  }
+
+  // sets the current page to show user's public files
+  const setMyPublicPage = () => {
+    setshowPublic(false);
+    setshowMyPublic(true);
+    setshowPrivate(false);
+    setshowShared(false);
+    setshowAll(false);
+    setShowSearchPage(false)
   }
    
   // checks if a wallet is connected
@@ -147,12 +164,14 @@ function App() {
           setAllPage={setAllPage}
           setPrivatePage={setPrivatePage}
           setPublicPage={setPublicPage}
+          setMyPublicPage={setMyPublicPage}
           setSharedPage= {setSharedPage}
         />
         <Content
             showAll={showAll}
             showPrivate={showPrivate}
             showPublic={showPublic}
+            showMyPublic={showMyPublic}
             showShared={showShared}
             showSearchPage={showSearchPage}
             setSearchPage={setSearchPage}
