@@ -13,6 +13,7 @@ export default function AllFiles({files}) {
                       fileType={file.fileType} 
                       uploadedAt={file.time}
                       uploadedBy={file.author}
+                      cid = {file.cid}
                   />
         })
       }

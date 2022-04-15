@@ -10,7 +10,7 @@ export default function SimilarFiles({sharedFiles}) {
             return <FileCard 
                         key={index}
                         fileType={file.fileType} 
-                        title={file.title}
+                        title={file.name}
                         uploadedAt={file.time}
                         uploadedBy={file.author}
                     />

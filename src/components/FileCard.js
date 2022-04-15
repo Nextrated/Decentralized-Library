@@ -8,7 +8,7 @@ import { shareFile } from '../api';
 
 export default function FileCard(props) {
   const bg = useColorModeValue("whitesmoke", "primaryLight");
-  const { title,fileType, uploadedAt, uploadedBy } = props;
+  const { title,fileType, uploadedAt, uploadedBy, cid } = props;
   const [address, setAddress] = useState("")
   const [loading, setloading] = useState(false)
   const addr = contractAddress.contractAddress;
@@ -71,6 +71,7 @@ export default function FileCard(props) {
       // minWidth={"300px"}
     >
         <Image src="dp.png" alt="fileimg" h="180px" w="100%"/>
+        {console.log(cid)}
         <Box px={5} pt={5} fontSize="sm" fontWeight="700" textAlign="left">
           {fileType==="Public" ? <Badge colorScheme="teal" borderRadius="full" mb={3}>Public</Badge>: null}
           {fileType==="Private" ? <Badge colorScheme="red" borderRadius="full" mb={3}>Private</Badge>: null} 

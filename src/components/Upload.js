@@ -58,14 +58,14 @@ const Upload = () => {
     })
   }
 
-  const fileUpload = async () => {
+  const fileUpload = async (x) => {
     try {
         const {ethereum} = window
         if(ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const fileUploadContract = new ethers.Contract(contractAddress.contractAddress, abi.abi, signer)
-            const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
+            const fileUploadTxn = await fileUploadContract.fileUpload(x, fileName, type)
             await fileUploadTxn.wait()
             setSubmitted('Upload successful!')
             setIsSubmitted(false)
@@ -99,8 +99,8 @@ const Upload = () => {
       const created = await client.add (file);
       console.log ('path', created.path);
       let cid = created.path;
-      setCid (cid);
-      fileUpload ();
+      //setCid (cid);
+      fileUpload (cid);
     } catch (error) {
       onClose()
       showErrorToast("An unexpected error occured")
