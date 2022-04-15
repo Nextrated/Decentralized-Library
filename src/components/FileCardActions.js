@@ -46,8 +46,8 @@ export default function FileCardActions({isPrivate, address, cid, handleChange, 
                         <Text d="flex" alignItems="center"><AiFillEye/>&nbsp; &nbsp; Preview</Text>
                     </Box>
                     <Divider/>
-                    <Box px={5} py={3} onClick={ () => download()}>
-                        <Text d="flex" alignItems="center"><AiOutlineCloudDownload/>&nbsp; &nbsp; Download</Text>
+                    <Box px={5} py={3}>
+                        <Text d="flex" alignItems="center"><AiOutlineCloudDownload/>&nbsp; &nbsp; <a href={url} download> Download </a></Text>
                     </Box>
                     <Divider d={isPrivate ? "block" : "none"}/>
                     <ShareForm
