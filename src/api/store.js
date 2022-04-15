@@ -2,7 +2,7 @@ import {Web3Storage} from "web3.storage";
 
 // require('dotenv').config()
 
-const { WEB3_TOKEN } = process.env
+//const { WEB3_TOKEN } = process.env
 
 // put your web3.storage token here to run the function
 // const token = WEB3_TOKEN

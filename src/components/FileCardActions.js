@@ -1,16 +1,13 @@
-import { Box, Icon, Text, Popover, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Divider } from '@chakra-ui/react'
+import { Box, Icon, Text, useColorModeValue, Popover, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Divider } from '@chakra-ui/react'
 import React from 'react';
 import { FiMoreHorizontal } from "react-icons/fi";
 import {AiOutlineCloudDownload, AiFillEye } from "react-icons/ai";
 import ShareForm from './ShareForm';
-
 import fileDownload from 'js-file-download'
-import {create} from 'ipfs-http-client';
-
-
-const client = create ('https://ipfs.infura.io:5001/api/v0');
 
 export default function FileCardActions({isPrivate, address, cid, handleChange, loading, submitAddress}) {
+    const bg = useColorModeValue("blackAlpha.100", "primaryLight");
+
     const url = "https://ipfs.infura.io/ipfs/" + cid
 
     const preview = () => {
@@ -42,12 +39,12 @@ export default function FileCardActions({isPrivate, address, cid, handleChange, 
                 <PopoverCloseButton/>
                 <PopoverBody>
                     {/* <Divider/> */}
-                    <Box px={5} py={3} onClick={ preview }>
+                    <Box px={5} py={3} onClick={ preview } _hover={{bg:bg}}>
                         <Text d="flex" alignItems="center"><AiFillEye/>&nbsp; &nbsp; Preview</Text>
                     </Box>
                     <Divider/>
-                    <Box px={5} py={3}>
-                        <Text d="flex" alignItems="center"><AiOutlineCloudDownload/>&nbsp; &nbsp; <a href={url} download> Download </a></Text>
+                    <Box px={5} py={3} onClick={ () => download()} _hover={{bg:bg}}>
+                        <Text d="flex" alignItems="center"><AiOutlineCloudDownload/>&nbsp; &nbsp; Download</Text>
                     </Box>
                     <Divider d={isPrivate ? "block" : "none"}/>
                     <ShareForm

@@ -6,7 +6,12 @@ export const timeConv = (t) => {
 }
 
 export const sortFiles = (files) => {
-    return files.sort(compare)
+    if(files){
+        return files.sort(compare)
+    } else{
+        return files
+    }
+    
 }
 
 function compare(first, second) {
