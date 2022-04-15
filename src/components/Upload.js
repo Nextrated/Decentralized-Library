@@ -33,13 +33,13 @@ const Upload = () => {
   const [fileName, setFileName] = useState ('');
   const [type, setType] = useState ('0');
   const [file, setFile] = useState (null);
-  // const [fileDetails, setFileDetails] = useState ('');
-  // const [cid, setCid] = useState ('');
+  const [fileDetails, setFileDetails] = useState ('');
+  const [cid, setCid] = useState ('');
   const [submitted, setSubmitted] = useState ('');
   const [isSubmitted, setIsSubmitted] = useState(false)
   const captureFile = e => {
     const data = e.target.files[0];
-    // setFileDetails (data);
+    setFileDetails (data);
     const reader = new window.FileReader ();
     reader.readAsArrayBuffer (data);
     reader.onloadend = () => {
@@ -63,12 +63,14 @@ const Upload = () => {
         const {ethereum} = window
         if(ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
+            await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner();
             const fileUploadContract = new ethers.Contract(contractAddress.contractAddress, abi.abi, signer)
             const fileUploadTxn = await fileUploadContract.fileUpload(x, fileName, type)
             await fileUploadTxn.wait()
             setSubmitted('Upload successful!')
             setIsSubmitted(false)
+            
             setTimeout(() => {
               setSubmitted('')
               onClose()
@@ -79,7 +81,7 @@ const Upload = () => {
                 duration:"5000",
                 isClosable:true
               })
-            }, 1000); 
+            }, 4000); 
         } else{
           onClose()
           setIsSubmitted(false)
@@ -87,7 +89,6 @@ const Upload = () => {
           showErrorToast("Please ensure you are connected to metamask")
           console.log('ethereum object does not exist!')
         }
-        
     } catch (error) {
       onClose()
       setIsSubmitted(false)
