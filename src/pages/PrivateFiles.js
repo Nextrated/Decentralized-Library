@@ -9,6 +9,7 @@ export default function PrivateFiles({privateFiles}) {
           privateFiles.map((file, index) => {
             return <FileCard 
                         key={index}
+                        cid={file.cid}
                         fileType={file.fileType} 
                         title={file.name}
                         uploadedAt={file.time}

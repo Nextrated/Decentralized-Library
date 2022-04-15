@@ -9,6 +9,7 @@ export default function SimilarFiles({sharedFiles}) {
           sharedFiles.map((file, index) => {
             return <FileCard 
                         key={index}
+                        cid={file.cid}
                         fileType={file.fileType} 
                         title={file.title}
                         uploadedAt={file.time}

@@ -8,7 +8,7 @@ import { shareFile } from '../api';
 
 export default function FileCard(props) {
   const bg = useColorModeValue("whitesmoke", "primaryLight");
-  const { title,fileType, uploadedAt, uploadedBy } = props;
+  const { cid, title, fileType, uploadedAt, uploadedBy } = props;
   const [address, setAddress] = useState("")
   const [loading, setloading] = useState(false)
   const addr = contractAddress.contractAddress;
@@ -89,8 +89,9 @@ export default function FileCard(props) {
             </Box>
             <Box mt={3} cursor="pointer">
               <FileCardActions 
-                isPrivate={ fileType ==="Private" ? true : false} 
+                isPrivate={ fileType === "Private" ? true : false} 
                 address={address}
+                cid={cid}
                 handleChange={handleChange}
                 loading={loading}
                 submitAddress={submitAddress}

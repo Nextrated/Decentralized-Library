@@ -82,10 +82,16 @@ const Upload = () => {
               })
             }, 4000); 
         } else{
+          onClose()
+          setIsSubmitted(false)
+          setSubmitted('')
           showErrorToast("Please ensure you are connected to metamask")
           console.log('ethereum object does not exist!')
         }
     } catch (error) {
+      onClose()
+      setIsSubmitted(false)
+      setSubmitted('')
       showErrorToast("An unexpected error occured")
       console.log (error);
     }
@@ -96,13 +102,16 @@ const Upload = () => {
     setIsSubmitted(true)
     
     try {
-      const created = await client.add (file);
+      const created = await client.add(file);
       console.log ('path', created.path);
       let cid = created.path;
+      console.log("CID: ", cid)
       setCid (cid);
       fileUpload ();
     } catch (error) {
       onClose()
+      setIsSubmitted(false)
+      setSubmitted('')
       showErrorToast("An unexpected error occured")
       console.log (error);
     }
