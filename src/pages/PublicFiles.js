@@ -2,10 +2,10 @@ import React from 'react'
 import { Box } from "@chakra-ui/react"
 import FileCard from '../components/FileCard';
 
-//import { getPublicFiles } from '../api';
+import { sortFiles } from '../utils';
 
 export default function PublicFiles({publicFiles}) {
-  const fileType = "Public"
+  publicFiles = sortFiles(publicFiles)
 
   return (
     <Box d="flex" flexWrap="wrap" px={{base:5 , md:10, lg:12 }} mt={5} mx="auto" justifyContent="space-around">
@@ -15,7 +15,7 @@ export default function PublicFiles({publicFiles}) {
                         key={index}
                         cid={file.cid}
                         title={file.name}
-                        fileType={fileType} 
+                        fileType={file.fileType} 
                         uploadedAt={file.time}
                         uploadedBy={file.author}
                     />

@@ -141,8 +141,6 @@ function App() {
     setSharedFiles(files)
   }
 
-  console.log("Env: ", process.env.API_URL)
-
   useEffect(() => {
     var newArr = publicFiles.concat(privateFiles, sharedFiles);
     setAllFiles(newArr);

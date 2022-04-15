@@ -4,41 +4,32 @@ import { FiMoreHorizontal } from "react-icons/fi";
 import {AiOutlineCloudDownload, AiFillEye } from "react-icons/ai";
 import ShareForm from './ShareForm';
 
+import fileDownload from 'js-file-download'
 import {create} from 'ipfs-http-client';
 
-import { getFile } from '../api/store';
 
 const client = create ('https://ipfs.infura.io:5001/api/v0');
 
 export default function FileCardActions({isPrivate, address, cid, handleChange, loading, submitAddress}) {
+    const url = "https://ipfs.infura.io/ipfs/" + cid
+
+    const preview = () => {
+        try {
+            window.open(url, '_blank')
+        } catch(error) {
+            console.log("Error: ", error)
+        }
+    }
 
     const download = async () => {
-        console.log("Downloading... :", cid)
-        const CID = "Qmd2EfsYeNPdfRXtkkXUqm5Eb1H1nQE77ptwdpLWX23TtQ"
-
-        await getFile()
-        
-        // try {
-        //     const r = await client.get(CID)
-        //     const f = await client.files
-        //     console.log("Result: ", r)
-
-        //     // client.files.get(`http://ipfs.io/ipfs/${CID}`, function(files, err) {
-        //     //     if (err) {
-        //     //         console.log("Error: ", err)
-        //     //         return
-        //     //     }
-                
-        //     //     files.forEach((file) => {
-        //     //         console.log("File: ",file)
-        //     //         console.log("Content: ", file.content.toString('binary'))
-        //     //     })
-        //     // })
-        // } catch(error) {
-        //     console.log("Error: ", error)
-        // }
-
-        // console.log("CID:", CID)
+        try {
+            console.log("Hello")
+            const file = await fetch(url)
+            console.log("File: ", file)
+            fileDownload(file.body, cid)
+        } catch(error) {
+            console.log("Error: ", error)
+        }
     }
     
   return (
@@ -51,7 +42,7 @@ export default function FileCardActions({isPrivate, address, cid, handleChange, 
                 <PopoverCloseButton/>
                 <PopoverBody>
                     {/* <Divider/> */}
-                    <Box px={5} py={3}>
+                    <Box px={5} py={3} onClick={ preview }>
                         <Text d="flex" alignItems="center"><AiFillEye/>&nbsp; &nbsp; Preview</Text>
                     </Box>
                     <Divider/>

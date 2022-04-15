@@ -3,6 +3,8 @@ import { ethers } from "ethers"
 import contractAbi from "../contracts/abi.json"
 import contractAddress from "../contracts/contract_address.json"
 
+import { timeConv } from "../utils"
+
 const getProvider = async (ethereum) => {
     const provider = new ethers.providers.Web3Provider(ethereum)
     await provider.send("eth_requestAccounts", []);
@@ -12,12 +14,6 @@ const getProvider = async (ethereum) => {
 const getSigner = async (ethereum) => {
     const provider = await getProvider(ethereum)
     return provider.getSigner()
-}
-
-const timeConv = (t) => {
-    let x = t.toString(16) * 1000
-    x = new Date(+x);
-    return x.toDateString();
 }
 
 const parseResult = (txnResult, fileType) => {
@@ -36,7 +32,8 @@ const parseResult = (txnResult, fileType) => {
                 name: names[i], 
                 time: timeConv(time[i]._hex), 
                 author: owners[i],
-                fileType: fileType
+                fileType: fileType,
+                timestamp: time[i]
             }
             files.push(file)
         }
