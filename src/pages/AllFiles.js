@@ -9,11 +9,11 @@ export default function AllFiles({files}) {
         files.map((file, index) => {
           return <FileCard 
                       key={index}
-                      cid={file.cid}
                       title={file.name}
                       fileType={file.fileType} 
                       uploadedAt={file.time}
                       uploadedBy={file.author}
+                      cid = {file.cid}
                   />
         })
       }
