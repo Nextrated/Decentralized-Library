@@ -10,6 +10,7 @@ contract DecentralizedLibrary {
 
     address public owner;
     mapping (string => FileDetail) public collection; 
+    //keeping track of the keys in the collection mapping
     string[] public keys;
 
     mapping (address => mapping(string => FileDetail)) public privateCollection;
@@ -17,10 +18,11 @@ contract DecentralizedLibrary {
 
     mapping (address => mapping(string => FileDetail)) public sharedCollection;
     mapping(address => string[]) private sKey;
-    address[] public sharedAccess;
 
 
     mapping (string => bool) public fileExists;
+    /* Checking File Share status
+    mapping (address => mapping(string => bool)) public fileShared; */
    
     /// @notice Structs of all the file details.
     struct FileDetail { 
@@ -34,19 +36,10 @@ contract DecentralizedLibrary {
     event FileUploaded(string ipfsCID, string fileName, uint timeUploaded , address fileOwner); 
 
 
-
-    /// @notice Makes sure the current address is the only owner -> for private files functions
+/// @notice Makes sure the current address is the only owner -> for private files functions
     constructor(){
         owner = msg.sender;
     }
-
-    /// @notice Makes sure the current address is the only owner
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only current address can do this");
-        _;
-    }
-
-
     /// @notice Upload files to a public dashboard.
     /// @param  _ipfsCID The CID hash of the file uploaded to ipfs/any decentralised storage
     /// @param  _fileName The file name of the file
@@ -54,7 +47,7 @@ contract DecentralizedLibrary {
     /// @dev    The params are stored on the blockchain on function call, lookups can be done 
     function fileUpload(string memory _ipfsCID, string memory _fileName, uint _uploadType) 
     public { 
-       // require(fileExists[_ipfsCID] == false, "File with this CID already exists.");
+       //require(fileExists[_ipfsCID] == false, "File with this CID already exists.");
         require(fileExists[_fileName] == false, "File with this Name already exists, Rename.");
 
         //initialising our struct with data
@@ -234,14 +227,22 @@ contract DecentralizedLibrary {
     /// @param _to intended address to receive file.
     /// @param _fileName unique name of file to be shared.
     function sharePrivateFile(address _to, string memory _fileName) external {
+
+        //checks if a file name exists
         require(fileExists[_fileName] == true, "File does not exist");
+        
+        /* make's sure a file hasn't been shared to the same address before
+        require(fileShared[_to][_fileName] == false, "File has already been shared to this address");*/
+
         (string memory _ipfsCID, string memory _filename,
         uint _timeUploaded, address _fileOwner)  = getOnePrivateFile(_fileName);
         require(_fileOwner == msg.sender, "File share not authorized. Not Owner");
         FileDetail memory fileDetails = FileDetail(_ipfsCID, _filename , _timeUploaded, _fileOwner);
         sharedCollection[_to][_fileName] = fileDetails;
         sKey[_to].push(_fileName);
-        sharedAccess.push(_to);
+
+        /*mark a file name as already shared
+        fileShared[_to][_fileName] = true;*/
     }
 
 

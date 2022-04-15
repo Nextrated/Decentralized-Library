@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Box, Image, Badge, Text, useColorModeValue, useToast } from "@chakra-ui/react";
 import FileCardActions from './FileCardActions';
-import abi from "../contracts/abi.json";
-import contractAddress from "../contracts/contract_address.json";
-import { ethers } from "ethers";
-import { retrieveFiles } from '../api/store';
 
+import { shareFile } from '../api';
 
 
 export default function FileCard(props) {
@@ -13,8 +10,6 @@ export default function FileCard(props) {
   const { title,fileType, uploadedAt, uploadedBy, cid } = props;
   const [address, setAddress] = useState("")
   const [loading, setloading] = useState(false)
-  const [file, setFile] = useState([]);
-  const addr = contractAddress.contractAddress;
   const toast = useToast();
 
   const handleChange = () => {
@@ -27,12 +22,7 @@ export default function FileCard(props) {
       try {
           const {ethereum} = window
           if(ethereum) {
-              const provider = new ethers.providers.Web3Provider(ethereum);
-              await provider.send("eth_requestAccounts", []);
-              const signer = await provider.getSigner();
-              const library = new ethers.Contract(addr, abi.abi, signer)
-              const fileUploadTxn = await library.sharePrivateFile(address, title)
-              await fileUploadTxn.wait()
+            await shareFile(ethereum, address, title)
             setloading(false)
             toast({
               title:"Successfull",
@@ -67,11 +57,6 @@ export default function FileCard(props) {
       }
   }
 
-  async function retrieve(cid){
-    const res = await retrieveFiles(cid)
-    setFile(res)
-  }
-
   // useEffect(() => {
   //   retrieve(cid)
   // }, [])
@@ -87,6 +72,8 @@ export default function FileCard(props) {
       overflow="hidden"
       bg={bg}
       boxShadow="lg"
+      cursor="pointer"
+      onClick={() => window.open(`https://ipfs.io/ipfs/${cid}`, '_blank')}
       // minWidth={"300px"}
       //{cid === "" && file.length===0 ? "dp.png" :`https://ipfs.io/ipfs/${cid}/${file[0].name}`}
     >
@@ -109,8 +96,9 @@ export default function FileCard(props) {
             </Box>
             <Box mt={3} cursor="pointer">
               <FileCardActions 
-                isPrivate={ fileType ==="Private" ? true : false} 
+                isPrivate={ fileType === "Private" ? true : false} 
                 address={address}
+                cid={cid}
                 handleChange={handleChange}
                 loading={loading}
                 submitAddress={submitAddress}

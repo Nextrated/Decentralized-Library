@@ -2,23 +2,17 @@
 import React, {useRef, useState, useEffect} from 'react';
 import {
   Box,
-  Grid,
   useDisclosure,
   //useColorModeValue,
-  Text
 } from '@chakra-ui/react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import AllFiles from './pages/AllFiles';
-import PublicFiles from "./pages/PublicFiles";
-import PrivateFiles from "./pages/PrivateFiles";
-import SharedFiles from "./pages/SharedFiles";
-import Upload from './components/Upload';
 // import SampleUpload from "./components/SampleUpload";
 // import contractAddress from "./contracts/contract_address.json";
 import "./App.css";
+import Content from './pages/Content';
 
-import { fetchPublicFiles, fetchPrivateFiles, fetchSharedFiles } from "./api"
+// require('dotenv').config()
 
 function App() {
   const {isOpen, onOpen, onClose}= useDisclosure();
@@ -30,14 +24,21 @@ function App() {
   const [showPublic, setshowPublic] = useState(false);
   const [showPrivate, setshowPrivate] = useState(false);
   const [showShared, setshowShared] = useState(false);
+  const [showSearchPage, setShowSearchPage ] = useState(false)
   // const addr = contractAddress.contractAddress;
-  const [ publicFiles, setPublicFiles ] = useState([]);
-  const [ privateFiles, setPrivateFiles ] = useState([]);
-  const [ sharedFiles, setSharedFiles ] = useState([]);
-  const [ allFiles, setAllFiles ] = useState([]);
+  
+  // sets trhe current page to show searched files
+  const setSearchPage = () => {
+    setShowSearchPage(true)
+    setshowPublic(false);
+    setshowPrivate(false);
+    setshowShared(false);
+    setshowAll(false);
+  }
 
   // sets trhe current page to show all files
   const setAllPage = () => {
+    setShowSearchPage(false)
     setshowPublic(false);
     setshowPrivate(false);
     setshowShared(false);
@@ -46,6 +47,7 @@ function App() {
 
   // sets the current page to show shared files
   const setSharedPage = () => {
+    setShowSearchPage(false)
     setshowPublic(false);
     setshowPrivate(false);
     setshowShared(true);
@@ -54,6 +56,7 @@ function App() {
 
   // sets te current page to show private files
   const setPrivatePage = () => {
+    setShowSearchPage(false)
     setshowPublic(false);
     setshowPrivate(true);
     setshowShared(false);
@@ -121,38 +124,12 @@ function App() {
     }
   } 
 
-  //function to get all public files
-  const getPublicFiles = async () => {
-    const files = await fetchPublicFiles(window.ethereum)
-    setPublicFiles(files)
-  }
-
-  //function to get all private files
-  const getPrivateFiles = async () => {
-    const files = await fetchPrivateFiles(window.ethereum)
-    setPrivateFiles(files)
-  }
-
-  //function to get all shared files
-  const getSharedFiles = async () => {
-    const files = await fetchSharedFiles(window.ethereum)
-    setSharedFiles(files)
-  }
-
-  useEffect(() => {
-    var newArr = publicFiles.concat(privateFiles, sharedFiles);
-    setAllFiles(newArr);
-  }, [publicFiles, privateFiles, sharedFiles])
+  
+  
   
   useEffect (() => {
     setIsConnected(false)
     checkIfWalletIsConnected ();
-    async function fetchFiles(){
-      await getPublicFiles();
-      await getPrivateFiles();
-      await getSharedFiles();
-    }
-    fetchFiles();
   }, [])
 
   return (
@@ -172,22 +149,15 @@ function App() {
           setPublicPage={setPublicPage}
           setSharedPage= {setSharedPage}
         />
-        <Grid minH="100vh" p={3}>
-          <Box mt="100px" d="flex" justifyContent="space-between" px={10}>
-            <Text fontSize={{base:"xl", md:"2xl", lg:"3xl"}} fontWeight="700">
-              {showAll ? "All files" : null}
-              {showShared ? "Shared with me" : null}
-              {showPublic ? "Public files" : null}
-              {showPrivate ? "Private files" : null}
-            </Text>
-            {/* <SampleUpload/> */}
-             <Upload />
-          </Box>
-          {showAll ? <AllFiles files={allFiles}/> : null}
-          {showPrivate ? <PrivateFiles privateFiles={privateFiles}/> : null}
-          {showPublic ? <PublicFiles publicFiles={publicFiles}/> : null}
-          {showShared ? <SharedFiles sharedFiles={sharedFiles}/> : null}
-        </Grid>
+        <Content
+            showAll={showAll}
+            showPrivate={showPrivate}
+            showPublic={showPublic}
+            showShared={showShared}
+            showSearchPage={showSearchPage}
+            setSearchPage={setSearchPage}
+            showAllFilesPage={setAllPage}
+        />
       </Box>
   );
 }

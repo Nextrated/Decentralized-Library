@@ -33,44 +33,66 @@ const Upload = () => {
   const [fileName, setFileName] = useState ('');
   const [type, setType] = useState ('0');
   const [file, setFile] = useState (null);
-  const [fileDetails, setFileDetails] = useState ('');
-  const [cid, setCid] = useState ('');
+  // const [fileDetails, setFileDetails] = useState ('');
+  // const [cid, setCid] = useState ('');
   const [submitted, setSubmitted] = useState ('');
   const [isSubmitted, setIsSubmitted] = useState(false)
   const captureFile = e => {
     const data = e.target.files[0];
-    setFileDetails (data);
+    // setFileDetails (data);
     const reader = new window.FileReader ();
     reader.readAsArrayBuffer (data);
     reader.onloadend = () => {
       setFile (Buffer (reader.result));
     };
   };
+  const toast = useToast();
 
-  const fileUpload = async () => {
+  const showErrorToast = (message) => {
+    toast({
+      title:"Unsuccessful",
+      description: message,
+      status:"error",
+      duration:"5000",
+      isClosable:true
+    })
+  }
+
+  const fileUpload = async (x) => {
     try {
         const {ethereum} = window
         if(ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const fileUploadContract = new ethers.Contract(contractAddress.contractAddress, abi.abi, signer)
-            const fileUploadTxn = await fileUploadContract.fileUpload(cid, fileName, type)
+            const fileUploadTxn = await fileUploadContract.fileUpload(x, fileName, type)
             await fileUploadTxn.wait()
             setSubmitted('Upload successful!')
             setIsSubmitted(false)
-            
             setTimeout(() => {
               setSubmitted('')
               onClose()
-            }, 4000);
-
-            await fileUploadContract.on("FileUploaded", (ipfsCID, fileName, timeUploaded , fileOwner) => {
-              window.location.reload()
-            }) 
+              toast({
+                title:"Successfull",
+                description:`File uploaded successfully`,
+                status:"success",
+                duration:"5000",
+                isClosable:true
+              })
+            }, 1000); 
         } else{
-            console.log('ethereum object does not exist!')
+          onClose()
+          setIsSubmitted(false)
+          setSubmitted('')
+          showErrorToast("Please ensure you are connected to metamask")
+          console.log('ethereum object does not exist!')
         }
+        
     } catch (error) {
+      onClose()
+      setIsSubmitted(false)
+      setSubmitted('')
+      showErrorToast("An unexpected error occured")
       console.log (error);
     }
   };
@@ -80,15 +102,15 @@ const Upload = () => {
     setIsSubmitted(true)
     
     try {
-      const created = await client.add (file);
+      const created = await client.add(file);
       console.log ('path', created.path);
       let cid = created.path;
-      setCid (cid);
-      fileUpload ();
-      console.log ('filename', fileName);
-      console.log ('cid', cid);
-      console.log ('type', type);
+      fileUpload (cid);
     } catch (error) {
+      onClose()
+      setIsSubmitted(false)
+      setSubmitted('')
+      showErrorToast("An unexpected error occured")
       console.log (error);
     }
   };
