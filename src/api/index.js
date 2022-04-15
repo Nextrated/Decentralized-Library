@@ -51,6 +51,7 @@ const getContract = async (ethereum) => {
     return contract
 }
 
+
 export const fetchPublicFiles = async (ethereum) => {
     try {
         const contract = await getContract(ethereum)
