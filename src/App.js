@@ -14,11 +14,13 @@ import PublicFiles from "./pages/PublicFiles";
 import PrivateFiles from "./pages/PrivateFiles";
 import SharedFiles from "./pages/SharedFiles";
 import Upload from './components/Upload';
-// import SampleUpload from "./components/SampleUpload";
+import SampleUpload from "./components/SampleUpload";
 import contractAddress from "./contracts/contract_address.json";
 import "./App.css";
 
 import { fetchPublicFiles, fetchPrivateFiles, fetchSharedFiles } from "./api"
+
+// require('dotenv').config()
 
 function App() {
   const {isOpen, onOpen, onClose}= useDisclosure();
@@ -139,6 +141,8 @@ function App() {
     setSharedFiles(files)
   }
 
+  console.log("Env: ", process.env.API_URL)
+
   useEffect(() => {
     var newArr = publicFiles.concat(privateFiles, sharedFiles);
     setAllFiles(newArr);
@@ -182,8 +186,8 @@ function App() {
               {showPublic ? "Public files" : null}
               {showPrivate ? "Private files" : null}
             </Text>
-            {/* <SampleUpload/> */}
-             <Upload />
+            <SampleUpload/>
+             {/* <Upload /> */}
           </Box>
           {showAll ? <AllFiles files={allFiles}/> : null}
           {showPrivate ? <PrivateFiles privateFiles={privateFiles}/> : null}

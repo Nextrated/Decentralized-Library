@@ -6,6 +6,8 @@ import ShareForm from './ShareForm';
 
 import {create} from 'ipfs-http-client';
 
+import { getFile } from '../api/store';
+
 const client = create ('https://ipfs.infura.io:5001/api/v0');
 
 export default function FileCardActions({isPrivate, address, cid, handleChange, loading, submitAddress}) {
@@ -13,28 +15,30 @@ export default function FileCardActions({isPrivate, address, cid, handleChange, 
     const download = async () => {
         console.log("Downloading... :", cid)
         const CID = "Qmd2EfsYeNPdfRXtkkXUqm5Eb1H1nQE77ptwdpLWX23TtQ"
+
+        await getFile()
         
-        try {
-            const r = await client.get(CID)
-            const f = await client.files
-            console.log("Result: ", r)
+        // try {
+        //     const r = await client.get(CID)
+        //     const f = await client.files
+        //     console.log("Result: ", r)
 
-            // client.files.get(`http://ipfs.io/ipfs/${CID}`, function(files, err) {
-            //     if (err) {
-            //         console.log("Error: ", err)
-            //         return
-            //     }
+        //     // client.files.get(`http://ipfs.io/ipfs/${CID}`, function(files, err) {
+        //     //     if (err) {
+        //     //         console.log("Error: ", err)
+        //     //         return
+        //     //     }
                 
-            //     files.forEach((file) => {
-            //         console.log("File: ",file)
-            //         console.log("Content: ", file.content.toString('binary'))
-            //     })
-            // })
-        } catch(error) {
-            console.log("Error: ", error)
-        }
+        //     //     files.forEach((file) => {
+        //     //         console.log("File: ",file)
+        //     //         console.log("Content: ", file.content.toString('binary'))
+        //     //     })
+        //     // })
+        // } catch(error) {
+        //     console.log("Error: ", error)
+        // }
 
-        console.log("CID:", CID)
+        // console.log("CID:", CID)
     }
     
   return (

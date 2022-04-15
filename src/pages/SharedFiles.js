@@ -11,7 +11,7 @@ export default function SimilarFiles({sharedFiles}) {
                         key={index}
                         cid={file.cid}
                         fileType={file.fileType} 
-                        title={file.title}
+                        title={file.name}
                         uploadedAt={file.time}
                         uploadedBy={file.author}
                     />
