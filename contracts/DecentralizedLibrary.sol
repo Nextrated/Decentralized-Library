@@ -13,6 +13,9 @@ contract DecentralizedLibrary {
     //keeping track of the keys in the collection mapping
     string[] public keys;
 
+    mapping (address => mapping(string => FileDetail)) public myCollection;
+    mapping(address => string[]) private myKeys;
+
     mapping (address => mapping(string => FileDetail)) public privateCollection;
     mapping(address => string[]) private pKey;
 
@@ -21,8 +24,7 @@ contract DecentralizedLibrary {
 
 
     mapping (string => bool) public fileExists;
-    /* Checking File Share status
-    mapping (address => mapping(string => bool)) public fileShared; */
+    mapping (address => mapping(string => bool)) public fileShared; 
    
     /// @notice Structs of all the file details.
     struct FileDetail { 
@@ -36,7 +38,7 @@ contract DecentralizedLibrary {
     event FileUploaded(string ipfsCID, string fileName, uint timeUploaded , address fileOwner); 
 
 
-/// @notice Makes sure the current address is the only owner -> for private files functions
+    /// @notice Makes sure the current address is the only owner -> for private files functions
     constructor(){
         owner = msg.sender;
     }
@@ -60,6 +62,9 @@ contract DecentralizedLibrary {
         } else {
             collection[_ipfsCID] = fileDetails;
             keys.push(_ipfsCID); 
+
+            myCollection[msg.sender][_fileName] = fileDetails;
+            myKeys[msg.sender].push(_fileName);
         }
         
         // set fileExist to true
@@ -126,9 +131,35 @@ contract DecentralizedLibrary {
         return(ids, names, time, owners);
     }
 
-    /*
 
-    function getUploadedFileWithCID(string memory _ipfsCID) public view 
+     /// @notice Returns details about all public files uploaded by current address so far.
+    /// @dev    Details returned are the one's stored in the blockchain on upload.
+    /// @return ipfsCID of all current user's public uploads.
+    /// @return File name of all the current user's public uploads.
+    /// @return Upload date of all the current user's public uploads.
+    /// @return Address of the current user's public uploader.
+     function getUserPublicUploads() public view 
+     returns(string[] memory, string[] memory, uint[] memory, address[] memory) {
+        uint len = myKeys[msg.sender].length;
+        string [] memory ids = new string[](len);
+        string [] memory names = new string[](len);
+        uint [] memory time = new uint[](len);
+        address [] memory owners = new address [](len);
+
+        for (uint i = 0; i < len; ++i) {
+            string memory key = myKeys[msg.sender][i];
+            ids[i] = myCollection[msg.sender][key].ipfsCID;
+            names[i] = myCollection[msg.sender][key].fileName;
+            time[i] = myCollection[msg.sender][key].timeUploaded;
+            owners[i] = myCollection[msg.sender][key].fileOwner;
+        }
+        return(ids, names, time, owners);
+    }
+
+   
+
+    
+    /*    function getUploadedFileWithCID(string memory _ipfsCID) public view 
     returns (string memory, string memory, string memory, uint, address) {
         require(fileExists[_ipfsCID] == true, "This file probably hasn't been uploaded yet, retry later or reupload");
         return ( 
@@ -139,7 +170,6 @@ contract DecentralizedLibrary {
             collection[_ipfsCID].fileOwner,
         ); 
     }
-    
     function getUploadedFilewithName(string memory _fileName) public view returns (string memory, string memory, string memory, string memory, uint, address, bool) {
         require(fileExists[_fileName] == true, "File does not exist");
         return ( 
@@ -151,8 +181,7 @@ contract DecentralizedLibrary {
             collection[_fileName].fileOwner, 
             collection[_fileName].exist 
         ); 
-    }
-         */
+    } */
     
     
 
@@ -231,8 +260,8 @@ contract DecentralizedLibrary {
         //checks if a file name exists
         require(fileExists[_fileName] == true, "File does not exist");
         
-        /* make's sure a file hasn't been shared to the same address before
-        require(fileShared[_to][_fileName] == false, "File has already been shared to this address");*/
+        // make's sure a file hasn't been shared to the same address before
+        require(fileShared[_to][_fileName] == false, "File has already been shared to this address");
 
         (string memory _ipfsCID, string memory _filename,
         uint _timeUploaded, address _fileOwner)  = getOnePrivateFile(_fileName);
@@ -241,8 +270,8 @@ contract DecentralizedLibrary {
         sharedCollection[_to][_fileName] = fileDetails;
         sKey[_to].push(_fileName);
 
-        /*mark a file name as already shared
-        fileShared[_to][_fileName] = true;*/
+        //mark a file name as already shared
+        fileShared[_to][_fileName] = true;
     }
 
 
