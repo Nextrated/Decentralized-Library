@@ -1,16 +1,19 @@
-import React, { useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Image, Badge, Text, useColorModeValue, useToast } from "@chakra-ui/react";
 import FileCardActions from './FileCardActions';
 import abi from "../contracts/abi.json";
 import contractAddress from "../contracts/contract_address.json";
-import { ethers } from "ethers"
+import { ethers } from "ethers";
+import { retrieveFiles } from '../api/store';
+
 
 
 export default function FileCard(props) {
   const bg = useColorModeValue("whitesmoke", "primaryLight");
-  const { title,fileType, uploadedAt, uploadedBy } = props;
+  const { title,fileType, uploadedAt, uploadedBy, cid } = props;
   const [address, setAddress] = useState("")
   const [loading, setloading] = useState(false)
+  const [file, setFile] = useState([]);
   const addr = contractAddress.contractAddress;
   const toast = useToast();
 
@@ -63,6 +66,17 @@ export default function FileCard(props) {
           })
       }
   }
+
+  async function retrieve(cid){
+    const res = await retrieveFiles(cid)
+    setFile(res)
+  }
+
+  // useEffect(() => {
+  //   retrieve(cid)
+  // }, [])
+  
+
   return (
     <Box 
       mx={{base:'auto', md:2}} 
@@ -74,6 +88,7 @@ export default function FileCard(props) {
       bg={bg}
       boxShadow="lg"
       // minWidth={"300px"}
+      //{cid === "" && file.length===0 ? "dp.png" :`https://ipfs.io/ipfs/${cid}/${file[0].name}`}
     >
         <Image src="dp.png" alt="fileimg" h="180px" w="100%"/>
         <Box px={5} pt={5} fontSize="sm" fontWeight="700" textAlign="left">

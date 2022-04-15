@@ -17,6 +17,7 @@ export default function PublicFiles({publicFiles}) {
                         fileType={fileType} 
                         uploadedAt={file.time}
                         uploadedBy={file.author}
+                        cid={file.cid}
                     />
           })
         }

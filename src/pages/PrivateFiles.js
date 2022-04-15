@@ -13,6 +13,7 @@ export default function PrivateFiles({privateFiles}) {
                         title={file.name}
                         uploadedAt={file.time}
                         uploadedBy={file.author}
+                        cid={file.cid}
                     />
           })
         }

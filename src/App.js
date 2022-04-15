@@ -15,7 +15,7 @@ import PrivateFiles from "./pages/PrivateFiles";
 import SharedFiles from "./pages/SharedFiles";
 import Upload from './components/Upload';
 // import SampleUpload from "./components/SampleUpload";
-import contractAddress from "./contracts/contract_address.json";
+// import contractAddress from "./contracts/contract_address.json";
 import "./App.css";
 
 import { fetchPublicFiles, fetchPrivateFiles, fetchSharedFiles } from "./api"
@@ -30,7 +30,7 @@ function App() {
   const [showPublic, setshowPublic] = useState(false);
   const [showPrivate, setshowPrivate] = useState(false);
   const [showShared, setshowShared] = useState(false);
-  const addr = contractAddress.contractAddress;
+  // const addr = contractAddress.contractAddress;
   const [ publicFiles, setPublicFiles ] = useState([]);
   const [ privateFiles, setPrivateFiles ] = useState([]);
   const [ sharedFiles, setSharedFiles ] = useState([]);
@@ -163,8 +163,6 @@ function App() {
           currentAccount={currentAccount} 
           toggleWallet={connectWallet}
         />
-        {console.log(privateFiles)}
-        {console.log(sharedFiles)}
         <Sidebar 
           isOpen={isOpen} 
           onClose={onClose} 
