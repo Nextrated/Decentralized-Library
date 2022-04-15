@@ -66,6 +66,21 @@ export const fetchPublicFiles = async (ethereum) => {
     }
 }
 
+export const fetchMyPublicFiles = async (ethereum) => {
+    try {
+        const contract = await getContract(ethereum)
+        const txnResult = await contract.getUserPublicUploads()
+    
+        const myPublicFiles = parseResult(txnResult, "Public")
+    
+        return myPublicFiles
+        
+    } catch(error) {
+        console.log("Error: ", error)
+        return []
+    }
+}
+
 export const fetchPrivateFiles = async (ethereum) => {
     try {
         const contract = await getContract(ethereum)
