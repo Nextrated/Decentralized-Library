@@ -4,7 +4,7 @@ import { ColorModeSwitcher } from '../ColorModeSwitcher';
 import {GiHamburgerMenu} from "react-icons/gi";
 import {AiOutlineWallet} from "react-icons/ai"
 
-export default function Header({showSidebar , isConnected, currentAccount, toggleWallet}) {
+export default function Header({showSidebar , isConnected, currentAccount, toggleWallet, currentNetwork}) {
     const bg = useColorModeValue("whitesmoke", "primaryLight");
     const text = useColorModeValue("black", "white");
 
@@ -31,6 +31,9 @@ export default function Header({showSidebar , isConnected, currentAccount, toggl
         
         <Box>
             <ColorModeSwitcher justifySelf="flex-end"/>
+            <Button bg="purple" color="white" ml={5} >
+               {currentNetwork}
+            </Button>
             <Button bg="purple" color="white" ml={5} onClick={toggleWallet}>
                 {isConnected ? <> {truncate(currentAccount)}</> : <><AiOutlineWallet/> &nbsp; Connect Wallet</>}
             </Button>

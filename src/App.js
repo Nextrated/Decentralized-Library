@@ -24,7 +24,8 @@ function App() {
   const [showPublic, setshowPublic] = useState(false);
   const [showPrivate, setshowPrivate] = useState(false);
   const [showShared, setshowShared] = useState(false);
-  const [showSearchPage, setShowSearchPage ] = useState(false)
+  const [showSearchPage, setShowSearchPage ] = useState(false);
+  const [currentNetwork, setCurrentNetwork] = useState("");
   // const addr = contractAddress.contractAddress;
   
   // sets trhe current page to show searched files
@@ -124,12 +125,40 @@ function App() {
     }
   } 
 
+  //reconnect and reload automatically on account change
+  window.ethereum.on('accountsChanged', function (accounts) {
+    connectWallet();
+    
+    window.location.reload()
+  })
   
+
+  // window.ethereum.on('chainChanged', (chainId) => {
+  //   window.location.reload();
+  // });
+
+
+
+  const updateNetwork =  async () => {
+    const chainId = window.ethereum.chainId;
+    //console.log("this is the chain ID", chainId)
+
+    if(chainId === "0x4") {
+      setCurrentNetwork("Rinkeby Test Network")
+    } else{
+      setCurrentNetwork("Connect to Rinkeby")
+    }
+
+
+  }
+  
+  console.log("checkkk", currentNetwork)
   
   
   useEffect (() => {
     setIsConnected(false)
     checkIfWalletIsConnected ();
+    updateNetwork();
   }, [])
 
   return (
@@ -138,6 +167,7 @@ function App() {
           showSidebar={onOpen} 
           isConnected={isConnected} 
           currentAccount={currentAccount} 
+          currentNetwork = {currentNetwork}
           toggleWallet={connectWallet}
         />
         <Sidebar 
