@@ -148,28 +148,31 @@ function App() {
     connectWallet();
     
     window.location.reload()
-  })
-  
-
-  const chainId = window.ethereum.chainId;
-  window.ethereum.on('chainChanged', (chainId) => {
-    window.location.reload();
-  });
+  })  
 
   const updateNetwork =  async () => {
-    //console.log("this is the chain ID", chainId)
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    console.log("ChainId", chainId)
 
     if(chainId === "0x4") {
       setCurrentNetwork("Rinkeby Test Network")
-    } else{
-      setCurrentNetwork("Connect to Rinkeby")
+    } else if(chainId === "0x1") {
+      setCurrentNetwork("You're on ETH Mainnet, please connect to the Rinkeby Test Network")
+    } else if(chainId === "0x2a") {
+      setCurrentNetwork("You're on the Kovan Test Network, please connect to the Rinkeby Test Network")
+    }else if(chainId === "0x3") {
+      setCurrentNetwork("You're on the Ropsten Test Network, please connect to the Rinkeby Test Network")
+    }else if(chainId === "0x5") {
+      setCurrentNetwork("You're on Goerli Test Network, please connect to the Rinkeby Test Network")
+    } else {
+      setCurrentNetwork("Check your network, Please connect to the Rinkeby Test Network")
     }
-
 
   }
   
-  console.log("checkkk", currentNetwork)
-  
+  window.ethereum.on('chainChanged', (chainId) => {
+    window.location.reload();
+  });  
   
   useEffect (() => {
     setIsConnected(false)
