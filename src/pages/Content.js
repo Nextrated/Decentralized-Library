@@ -23,6 +23,7 @@ export default function Content({
   const [searchedFiles, setSearchedFiles] = useState([]);
   const [allFiles, setAllFiles] = useState([]);
   const [param, setParam] = useState('');
+  const [loading, setLoading] = useState(false)
 
   const search = y => {
     y = y.toLowerCase();
@@ -71,8 +72,12 @@ export default function Content({
       await getSharedFiles();
     }
     fetchFiles();
-  }, []);
+  }, [loading]);
 
+
+  const refresh = (x) => {
+      setLoading(x)
+  }
   useEffect(() => {
     var newArr = publicFiles.concat(privateFiles, sharedFiles);
     setAllFiles(newArr);
@@ -82,7 +87,7 @@ export default function Content({
     <Grid minH="100vh" p={3}>
       <Box
         d="flex"
-        mx="auto"
+        mx={{base:"0px", md:"auto"}}
         w={{ base: '100%', md: '80%', lg: '70%' }}
         h="auto"
         mt="100px"
@@ -90,7 +95,7 @@ export default function Content({
       >
         <Input
           type="text"
-          placeholder="Enter file title or cid"
+          placeholder="Enter file title or cid to search all files"
           required
           mb={4}
           value={param}
@@ -111,7 +116,7 @@ export default function Content({
           {showPrivate ? 'Private files' : null}
         </Text>
         {/* <SampleUpload/> */}
-        <Upload />
+        <Upload  reload={refresh} loading={loading}/>
       </Box>
       {showAll ? <AllFiles files={allFiles} /> : null}
       {showPrivate ? <PrivateFiles privateFiles={privateFiles} /> : null}

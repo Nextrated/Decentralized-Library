@@ -8,6 +8,10 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import FileCardActions from './FileCardActions';
+import {MdSubtitles } from "react-icons/md";
+import {FaSlackHash} from "react-icons/fa";
+import {AiOutlineClockCircle} from "react-icons/ai";
+import { VscAccount } from "react-icons/vsc"
 
 import { shareFile } from '../api';
 
@@ -61,6 +65,22 @@ export default function FileCard(props) {
     }
   };
 
+  // const imgs = ["file1.png", "file2.png", "file3.png"]
+
+  // const random = (arr) => {
+  //   return arr[Math.floor(Math.random() * arr.length)];
+  // }
+
+  const getImg = (x) => {
+    if(x ==="Public"){
+      return "file1.png"
+    } else if(x === "Private"){
+      return "file6.png"
+    } else{
+      return "fie5.png"
+    }
+  }
+
   // useEffect(() => {
   //   retrieve(cid)
   // }, [])
@@ -70,7 +90,9 @@ export default function FileCard(props) {
       mx={{ base: 'auto', md: 2 }}
       mb={5}
       borderRadius="lg"
-      minW={{ base: '100%', md: '45%', lg: '30%' }}
+      minW={{base:"100%", md:"350px"}}
+      w={{ base: '100%', md: '45%', lg: '30%' }}
+      wordBreak="break-word"
       // h={{base: "75%"}}
       overflow="hidden"
       bg={bg}
@@ -80,13 +102,15 @@ export default function FileCard(props) {
       //{cid === "" && file.length===0 ? "dp.png" :`https://ipfs.io/ipfs/${cid}/${file[0].name}`}
     >
       <Image
-        src="dp.png"
+        src={getImg(fileType)}
+        //src={`https://ipfs.io/ipfs/${cid}` || "file3.png"} 
         alt="fileimg"
         h="180px"
         w="100%"
+        fit="contain"
         onClick={() => window.open(`https://ipfs.io/ipfs/${cid}`, '_blank')}
       />
-      <Box px={5} pt={5} fontSize="sm" fontWeight="700" textAlign="left">
+      <Box px={5} pt={5} fontSize="xs" fontWeight="700" textAlign="left">
         {fileType === 'Public' ? (
           <Badge colorScheme="teal" borderRadius="full" mb={3}>
             Public
@@ -104,22 +128,29 @@ export default function FileCard(props) {
         ) : null}
         <Box d="flex">
           <Text color="gray.500" mr={3}>
-            Title:
+            <MdSubtitles/> &nbsp;
           </Text>
-          <Text>{title}</Text>
+          <Text textTransform="capitalize" mt="-3px">{title}</Text>
         </Box>
         <Box d="flex">
           <Text color="gray.500" mr={3}>
-            Uploaded at:
+            <AiOutlineClockCircle/> &nbsp;
           </Text>
-          <Text>{uploadedAt}</Text>
+          <Text mt="-3px">{uploadedAt}</Text>
         </Box>
         <Box d="flex">
           <Text color="gray.500" mr={3}>
-            By:
+            <FaSlackHash/> &nbsp;
           </Text>
-          <Text>{uploadedBy}</Text>
+          <Text mt="-5px">{cid}</Text>
         </Box>
+        {fileType === "Shared" ? <Box d="flex">
+          <Text color="gray.500" mr={3}>
+            <VscAccount /> &nbsp;
+          </Text>
+          <Text mt="-3px">{uploadedBy}</Text>
+        </Box>: null}
+
         <Box mt={3} cursor="pointer">
           <FileCardActions
             isPrivate={fileType === 'Private' ? true : false}

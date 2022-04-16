@@ -26,20 +26,20 @@ import contractAddress from '../contracts/contract_address.json';
 
 const client = create('https://ipfs.infura.io:5001/api/v0');
 
-const Upload = () => {
+const Upload = ({reload, loading}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef();
   const finalRef = useRef();
   const [fileName, setFileName] = useState('');
   const [type, setType] = useState('0');
   const [file, setFile] = useState(null);
-  const [fileDetails, setFileDetails] = useState('');
-  const [cid, setCid] = useState('');
+  // const [fileDetails, setFileDetails] = useState('');
+  // const [cid, setCid] = useState('');
   const [submitted, setSubmitted] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const captureFile = e => {
     const data = e.target.files[0];
-    setFileDetails(data);
+    // setFileDetails(data);
     const reader = new window.FileReader();
     reader.readAsArrayBuffer(data);
     reader.onloadend = () => {
@@ -88,7 +88,8 @@ const Upload = () => {
             duration: '5000',
             isClosable: true,
           });
-        }, 4000);
+          reload(!loading);
+        }, 1000);
       } else {
         onClose();
         setIsSubmitted(false);

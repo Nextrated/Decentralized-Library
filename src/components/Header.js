@@ -29,11 +29,14 @@ export default function Header({showSidebar , isConnected, currentAccount, toggl
             <Text color={text} d="flex" alignItems="center"> <Icon as={GiHamburgerMenu} onClick={showSidebar} mr={3} cursor="pointer"/> MetaFiles </Text>
             </Box>
         
-        <Box>
+        <Box d="flex" justifyContent="space-around" pr={5}>
             <ColorModeSwitcher justifySelf="flex-end"/>
-            <Button bg="purple" color="white" ml={5} onClick={toggleWallet}>
-                {isConnected ? <> {truncate(currentAccount)}</> : <><AiOutlineWallet/> &nbsp; Connect Wallet</>}
-            </Button>
+            <Box d="flex" flexDirection="column" mt="-10px">
+                <Button bg="purple" color="white" ml={5} onClick={toggleWallet} mb={2}>
+                    {isConnected ? <> {truncate(currentAccount)}</> : <><AiOutlineWallet/> &nbsp; Connect Wallet</>}
+                </Button>
+                <sub style={{color:"orange",fontSize:"10px", fontWeight:"bold", textAlign:'center'}}>Rinkeby network</sub>
+            </Box>
 
         </Box>
     </Box>

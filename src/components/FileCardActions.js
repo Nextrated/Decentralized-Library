@@ -1,6 +1,6 @@
 import { Box, Icon, Text, useColorModeValue, Popover, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Divider } from '@chakra-ui/react'
 import React from 'react';
-import { FiMoreHorizontal } from "react-icons/fi";
+import { CgOptions } from "react-icons/cg";
 import {AiOutlineCloudDownload, AiFillEye } from "react-icons/ai";
 import ShareForm from './ShareForm';
 import fileDownload from 'js-file-download'
@@ -33,7 +33,7 @@ export default function FileCardActions({isPrivate, address, cid, handleChange, 
     <Box>
         <Popover placement="right">
             <PopoverTrigger>
-                <Icon as={FiMoreHorizontal}  position="relative" />
+                <Icon as={CgOptions}  position="relative"  w={6} h={6}/>
             </PopoverTrigger>
             <PopoverContent>
                 <PopoverCloseButton/>
