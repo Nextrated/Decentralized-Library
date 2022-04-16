@@ -84,7 +84,7 @@ export default function FileCardActions({isPrivate,isPublic, address, cid, handl
                         <Text d="flex" alignItems="center"><AiOutlineCloudDownload/>&nbsp; &nbsp; Download</Text>
                     </Box>
                     <Divider d={isPublic ? "block":"none"}/>
-                    <Box px={5} py={3} onClick={ () => webShare()} _hover={{bg:bg}}>
+                    <Box d={isPublic ? "block":"none"} px={5} py={3} onClick={ () => webShare()} _hover={{bg:bg}}>
                         <Text d="flex" alignItems="center"><AiOutlineShareAlt mr={3}/>&nbsp; &nbsp; Share link</Text>
                     </Box>
                     <Divider d={isPrivate ? "block" : "none"}/>
