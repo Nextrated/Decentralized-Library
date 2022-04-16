@@ -142,6 +142,7 @@ function App() {
     }
   } 
 
+
   //reconnect and reload automatically on account change
   window.ethereum.on('accountsChanged', function (accounts) {
     connectWallet();
@@ -150,14 +151,12 @@ function App() {
   })
   
 
-  // window.ethereum.on('chainChanged', (chainId) => {
-  //   window.location.reload();
-  // });
-
-
+  const chainId = window.ethereum.chainId;
+  window.ethereum.on('chainChanged', (chainId) => {
+    window.location.reload();
+  });
 
   const updateNetwork =  async () => {
-    const chainId = window.ethereum.chainId;
     //console.log("this is the chain ID", chainId)
 
     if(chainId === "0x4") {
