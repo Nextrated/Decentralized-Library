@@ -14,11 +14,9 @@ Users can preview files as well as download them locally based on their choice. 
 
 ## Links
 
-* Etherscan url:
+* [Etherscan url](https://rinkeby.etherscan.io/address/0x18E30654BE206b778a5ad7Dd08278BcED20FbD11#code)
 
-* [Deployed url][]
-
-[Deployed url]: https://metafiles.netlify.app
+* [Deployed url](https://metafiles.netlify.app)
 
 ## To run the project locally
 
