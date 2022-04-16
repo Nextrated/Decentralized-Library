@@ -31,7 +31,6 @@ export default function FileCardActions({isPrivate, isPublic, address, cid, titl
 
     const download = async () => {
         try {
-            console.log("Hello")
             const file = await fetch(url)
             const data = await file.blob()
 
