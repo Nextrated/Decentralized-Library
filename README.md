@@ -13,3 +13,18 @@ npx hardhat node
 node scripts/sample-script.js
 npx hardhat help
 ```
+
+## What MetaFiles does
+
+A decentralized library that allows users to upload files, retrieve files, share files with other users and remove files from the service. These files could be articles, books, docx or anything similar. 
+
+* Contract address: "0x18E30654BE206b778a5ad7Dd08278BcED20FbD11"
+
+* Network: rinkeby
+
+
+## Links
+
+* Etherscan url:
+
+* Deployed url: 
