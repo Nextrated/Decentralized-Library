@@ -77,7 +77,7 @@ export default function FileCard(props) {
     } else if(x === "Private"){
       return "file6.png"
     } else{
-      return "fie5.png"
+      return "file5.png"
     }
   }
 
