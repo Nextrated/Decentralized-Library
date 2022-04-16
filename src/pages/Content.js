@@ -39,8 +39,13 @@ export default function Content({
       setSearchedFiles(res);
     }
     setSearchPage();
-    setParam('');
+    // setParam('');
   };
+
+  const handleSearch = (e) => {
+    setParam(e.target.value);
+    search(e.target.value);
+  }
 
   //function to get all public files
   const getPublicFiles = async () => {
@@ -66,14 +71,6 @@ export default function Content({
     setSharedFiles(files);
   };
 
-  //   const reloadFiles = async () => {
-  //     await getPublicFiles();
-  //       await getPrivateFiles();
-  //       await getSharedFiles();
-  //       var newArr = publicFiles.concat(privateFiles, sharedFiles);
-  //       setAllFiles(newArr);
-  //   }
-
   useEffect(() => {
     async function fetchFiles() {
       await getPublicFiles();
@@ -84,10 +81,11 @@ export default function Content({
     fetchFiles();
   }, [loading]);
 
-
+//function to trigger change in loading state causing the page to remount
   const refresh = (x) => {
       setLoading(x)
   }
+
   useEffect(() => {
     var newArr = publicFiles.concat(privateFiles, sharedFiles);
     setAllFiles(newArr);
@@ -109,7 +107,8 @@ export default function Content({
           required
           mb={4}
           value={param}
-          onChange={e => setParam(e.target.value)}
+          onChange={handleSearch}
+          //onChange={e => setParam(e.target.value)}
           w="70%"
           mr={2}
         />
@@ -120,11 +119,11 @@ export default function Content({
 
       <Box mt="30px" d="flex" justifyContent="space-between" px={10}>
         <Text fontSize={{ base: 'xl', md: '2xl', lg: '3xl' }} fontWeight="700">
-          {showAll ? 'All Files' : null}
-          {showShared ? 'Shared With Me' : null}
-          {showPublic ? 'Public Files' : null}
-          {showMyPublic ? 'My Public Files' : null}
-          {showPrivate ? 'Private Files' : null}
+          {showAll ? `All Files- (${allFiles?.length>0 ? allFiles.length : "0"})` : null}
+          {showShared ? `Shared With Me- (${sharedFiles?.length>0 ? sharedFiles.length : "0"})` : null}
+          {showPublic ? `Public Files- (${publicFiles?.length>0 ? publicFiles.length : "0"})` : null}
+          {showMyPublic ? `My Public Files- (${myPublicFiles?.length>0 ? myPublicFiles.length : "0"})` : null}
+          {showPrivate ? `My Private Files- (${privateFiles?.length>0 ? privateFiles.length : "0"})` : null}
         </Text>
         {/* <SampleUpload/> */}
         <Upload  reload={refresh} loading={loading}/>

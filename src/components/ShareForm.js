@@ -12,15 +12,17 @@ import {
     Input,
     ModalFooter,
     Box,
-    Text
+    Text,
+    useColorModeValue
   } from '@chakra-ui/react';
   import {AiOutlineShareAlt} from "react-icons/ai";
 
 export default function ShareForm({isPrivate, address, handleChange, loading, submitAddress}) {
     const {isOpen, onOpen, onClose} = useDisclosure ();
+    const bg = useColorModeValue("blackAlpha.100", "primaryLight");
   return (
     <div>
-      <Box px={5} py={3} d={isPrivate ? "block" : "none"} onClick={onOpen}>
+      <Box px={5} py={3} d={isPrivate ? "block" : "none"} onClick={onOpen} _hover={{bg:bg}}>
             <Text d="flex" alignItems="center"><AiOutlineShareAlt mr={3}/>&nbsp; &nbsp; Share</Text>
         </Box>
       <Modal
