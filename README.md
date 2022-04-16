@@ -27,4 +27,6 @@ A decentralized library that allows users to upload files, retrieve files, share
 
 * Etherscan url:
 
-* Deployed url: 
+* [Deployed url][]
+
+[Deployed url]: https://metafiles.netlify.app
