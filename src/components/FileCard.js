@@ -152,6 +152,7 @@ export default function FileCard(props) {
         <Box mt={3} cursor="pointer">
           <FileCardActions
             isPrivate={fileType === 'Private' ? true : false}
+            isPublic={fileType ==="Public" ? true : false}
             address={address}
             cid={cid}
             handleChange={handleChange}

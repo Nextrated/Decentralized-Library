@@ -1,13 +1,24 @@
-import { Box, Icon, Text, useColorModeValue, Popover, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Divider } from '@chakra-ui/react'
+import { Box, 
+    Icon, 
+    Text, 
+    useColorModeValue, 
+    Popover, 
+    PopoverBody, 
+    PopoverCloseButton, 
+    PopoverContent, 
+    PopoverTrigger, 
+    useToast,
+    Divider } from '@chakra-ui/react'
 import React from 'react';
 import { CgOptions } from "react-icons/cg";
 import {AiOutlineCloudDownload, AiFillEye } from "react-icons/ai";
 import ShareForm from './ShareForm';
-import fileDownload from 'js-file-download'
+import fileDownload from 'js-file-download';
+import {AiOutlineShareAlt} from "react-icons/ai";
 
-export default function FileCardActions({isPrivate, address, cid, handleChange, loading, submitAddress}) {
+export default function FileCardActions({isPrivate,isPublic, address, cid, handleChange, loading, submitAddress}) {
     const bg = useColorModeValue("blackAlpha.100", "primaryLight");
-
+    const toast = useToast();
     const url = "https://ipfs.infura.io/ipfs/" + cid
 
     const preview = () => {
@@ -28,6 +39,32 @@ export default function FileCardActions({isPrivate, address, cid, handleChange, 
             console.log("Error: ", error)
         }
     }
+
+    const webShare = async () => {
+        const data = {
+            title:"MetaFiles",
+            text:"File shared from metafiles decentralized library",
+            url:url
+        }
+        try{
+            await navigator.share(data);
+            toast({
+                title: 'Successfull',
+                description: `File shared successfully`,
+                status: 'success',
+                duration: '5000',
+                isClosable: true,
+              });
+        } catch(e){
+            toast({
+                title: 'Error!',
+                description: e,
+                status: 'error',
+                duration: '5000',
+                isClosable: true,
+              });
+        }
+    }
     
   return (
     <Box>
@@ -45,6 +82,10 @@ export default function FileCardActions({isPrivate, address, cid, handleChange, 
                     <Divider/>
                     <Box px={5} py={3} onClick={ () => download()} _hover={{bg:bg}}>
                         <Text d="flex" alignItems="center"><AiOutlineCloudDownload/>&nbsp; &nbsp; Download</Text>
+                    </Box>
+                    <Divider d={isPublic ? "block":"none"}/>
+                    <Box px={5} py={3} onClick={ () => webShare()} _hover={{bg:bg}}>
+                        <Text d="flex" alignItems="center"><AiOutlineShareAlt mr={3}/>&nbsp; &nbsp; Share link</Text>
                     </Box>
                     <Divider d={isPrivate ? "block" : "none"}/>
                     <ShareForm

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, { useRef, useState } from 'react';
 import { ethers } from 'ethers';
 import {
@@ -107,21 +108,27 @@ const Upload = ({reload, loading}) => {
   };
 
   const submitUpload = async e => {
-    e.preventDefault();
-    setIsSubmitted(true);
-
-    try {
-      const created = await client.add(file);
-      console.log('path', created.path);
-      let cid = created.path;
-      fileUpload(cid);
-    } catch (error) {
-      onClose();
-      setIsSubmitted(false);
-      setSubmitted('');
-      showErrorToast('An unexpected error occured');
-      console.log(error);
+    const res = confirm(`Are you sure you want to upload this file as ${type==="0"? "public" :"private"} ?\n You won't be able to change this later`)
+    if(res){
+      e.preventDefault();
+      setIsSubmitted(true);
+  
+      try {
+        const created = await client.add(file);
+        console.log('path', created.path);
+        let cid = created.path;
+        fileUpload(cid);
+      } catch (error) {
+        onClose();
+        setIsSubmitted(false);
+        setSubmitted('');
+        showErrorToast('An unexpected error occured');
+        console.log(error);
+      }
+    } else{
+      return
     }
+    
   };
   return (
     <div>

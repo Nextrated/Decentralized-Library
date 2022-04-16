@@ -23,7 +23,7 @@ export default function ShareForm({isPrivate, address, handleChange, loading, su
   return (
     <div>
       <Box px={5} py={3} d={isPrivate ? "block" : "none"} onClick={onOpen} _hover={{bg:bg}}>
-            <Text d="flex" alignItems="center"><AiOutlineShareAlt mr={3}/>&nbsp; &nbsp; Share</Text>
+            <Text d="flex" alignItems="center"><AiOutlineShareAlt mr={3}/>&nbsp; &nbsp; Share access</Text>
         </Box>
       <Modal
         isOpen={isOpen}
