@@ -20,7 +20,7 @@ export default function PublicFiles({publicFiles}) {
                         cid={file.cid}
                     />
           })
-}
+        }
     </Box>
   )
 }

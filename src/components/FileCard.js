@@ -98,8 +98,6 @@ export default function FileCard(props) {
       bg={bg}
       boxShadow="lg"
       cursor="pointer"
-      // minWidth={"300px"}
-      //{cid === "" && file.length===0 ? "dp.png" :`https://ipfs.io/ipfs/${cid}/${file[0].name}`}
     >
       <Image
         src={getImg(fileType)}

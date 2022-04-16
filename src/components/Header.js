@@ -4,7 +4,7 @@ import { ColorModeSwitcher } from '../ColorModeSwitcher';
 import {GiHamburgerMenu} from "react-icons/gi";
 import {AiOutlineWallet} from "react-icons/ai"
 
-export default function Header({showSidebar , isConnected, currentAccount, toggleWallet}) {
+export default function Header({showSidebar , isConnected, currentAccount, toggleWallet, currentNetwork}) {
     const bg = useColorModeValue("whitesmoke", "primaryLight");
     const text = useColorModeValue("black", "white");
 
@@ -32,11 +32,17 @@ export default function Header({showSidebar , isConnected, currentAccount, toggl
         <Box d="flex" justifyContent="space-around" pr={5}>
             <ColorModeSwitcher justifySelf="flex-end"/>
             <Box d="flex" flexDirection="column" mt="-10px">
-                <Button bg="purple" color="white" ml={5} onClick={toggleWallet} mb={2}>
-                    {isConnected ? <> {truncate(currentAccount)}</> : <><AiOutlineWallet/> &nbsp; Connect Wallet</>}
-                </Button>
-                <sub style={{color:"orange",fontSize:"10px", fontWeight:"bold", textAlign:'center'}}>Rinkeby network</sub>
+                 <Button bg="purple" color="white" ml={5} onClick={toggleWallet} mb={2}>
+                     {isConnected ? <> {truncate(currentAccount)}</> : <><AiOutlineWallet/> &nbsp; Connect Wallet</>}
+                 </Button>
+                 <sub style={{color:"orange",fontSize:"10px", fontWeight:"bold", textAlign:'center'}}>{currentNetwork}</sub>
             </Box>
+            {/* <Button bg="purple" color="white" ml={5} >
+               {currentNetwork}
+            </Button>
+            <Button bg="purple" color="white" ml={5} onClick={toggleWallet}>
+                {isConnected ? <> {truncate(currentAccount)}</> : <><AiOutlineWallet/> &nbsp; Connect Wallet</>}
+            </Button> */}
 
         </Box>
     </Box>

@@ -9,19 +9,27 @@ pragma solidity ^0.8.4;
 contract DecentralizedLibrary { 
 
     address public owner;
+
+    /// @notice mapping of public files uploaded any user
     mapping (string => FileDetail) public collection; 
-    //keeping track of the keys in the collection mapping
+    /// @notice an array to keep track of uploads in public uploads
     string[] public keys;
 
+    /// @notice mapping of public files uploaded by current user
     mapping (address => mapping(string => FileDetail)) public myCollection;
+    /// @notice mapping to an array to keep track of uploads into user's public uploads
     mapping(address => string[]) private myKeys;
 
+    /// @notice mapping of private files uploaded current user
     mapping (address => mapping(string => FileDetail)) public privateCollection;
+    /// @notice mapping to an array to keep track of uploads into private collection mapping
     mapping(address => string[]) private pKey;
 
-    mapping (address => mapping(string => FileDetail)) public sharedCollection;
-    mapping(address => string[]) private sKey;
 
+    /// @notice mapping of files shared to a current user
+    mapping (address => mapping(string => FileDetail)) public sharedCollection;
+    /// @notice mapping to an array to keep track of uploads into shared collection mapping
+    mapping(address => string[]) private sKey;
 
     mapping (string => bool) public fileExists;
     mapping (address => mapping(string => bool)) public fileShared; 
@@ -38,10 +46,11 @@ contract DecentralizedLibrary {
     event FileUploaded(string ipfsCID, string fileName, uint timeUploaded , address fileOwner); 
 
 
-    /// @notice Makes sure the current address is the only owner -> for private files functions
+     
     constructor(){
         owner = msg.sender;
     }
+    
     /// @notice Upload files to a public dashboard.
     /// @param  _ipfsCID The CID hash of the file uploaded to ipfs/any decentralised storage
     /// @param  _fileName The file name of the file
