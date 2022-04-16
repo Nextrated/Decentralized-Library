@@ -155,6 +155,7 @@ export default function FileCard(props) {
             isPublic={fileType ==="Public" ? true : false}
             address={address}
             cid={cid}
+            title={title}
             handleChange={handleChange}
             loading={loading}
             submitAddress={submitAddress}

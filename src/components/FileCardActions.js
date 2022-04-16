@@ -16,7 +16,7 @@ import ShareForm from './ShareForm';
 import fileDownload from 'js-file-download';
 import {AiOutlineShareAlt} from "react-icons/ai";
 
-export default function FileCardActions({isPrivate,isPublic, address, cid, handleChange, loading, submitAddress}) {
+export default function FileCardActions({isPrivate, isPublic, address, cid, title, handleChange, loading, submitAddress}) {
     const bg = useColorModeValue("blackAlpha.100", "primaryLight");
     const toast = useToast();
     const url = "https://ipfs.infura.io/ipfs/" + cid
@@ -33,8 +33,17 @@ export default function FileCardActions({isPrivate,isPublic, address, cid, handl
         try {
             console.log("Hello")
             const file = await fetch(url)
-            console.log("File: ", file)
-            fileDownload(file.body, cid)
+            const data = await file.blob()
+
+            const fileType = data.type
+            let fileExtension = fileType.split("/")[1]
+
+            if (fileType === "text/plain" || fileExtension === "plain") {
+                fileExtension = "txt"
+            }
+
+            const fileName = `${title}.${fileExtension}`
+            fileDownload(data, fileName)
         } catch(error) {
             console.log("Error: ", error)
         }
