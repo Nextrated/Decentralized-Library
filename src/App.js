@@ -148,11 +148,7 @@ function App() {
     connectWallet();
     
     window.location.reload()
-  })
-  
-
-  // const chainId = window.ethereum.chainId;
-  
+  })  
 
   const updateNetwork =  async () => {
     const chainId = await window.ethereum.request({ method: 'eth_chainId' });
