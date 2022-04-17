@@ -43,7 +43,7 @@
     "chain": "npx hardhat node --network hardhat",
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile",
-    "coverage": "npx hardhat coverage --testfiles test/*.js --network rinkeby",
+    "coverage": "npx hardhat coverage --testfiles test/*.js --network localhost",
     "deploy": "node scripts/deploy.js",
     "generate": "npx hardhat generate",
     "help": "npx hardhat help",
