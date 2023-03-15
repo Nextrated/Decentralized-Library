@@ -5,10 +5,10 @@ require("solidity-coverage");
 
 require('dotenv').config()
 
-const { API_URL, METAMASK_PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env
 
-// This is a sample Hardhat task. To learn how to create your own go to
-// https://hardhat.org/guides/create-task.html
+const key = process.env.GOERLI_URL;
+const secret = process.env.GOERLI_ACCOUNT;
+
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners();
 
@@ -16,31 +16,36 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
     console.log(account.address);
   }
 });
-
-const defaultNetwork = "rinkeby"
-
-// You need to export an object to set up your config
-// Go to https://hardhat.org/config/ to learn more
-
-/**
- * @type import('hardhat/config').HardhatUserConfig
- */
 module.exports = {
-  solidity: "0.8.4",
-  defaultNetwork: `${defaultNetwork}`,
+  defaultNetwork: "hardhat",
   networks: {
     hardhat: {
-      chainId: 1337
+      chainId: 1337,
     },
-    rinkeby: {
-      url: API_URL,
-      accounts: [METAMASK_PRIVATE_KEY],
-    }
+    mumbai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/nAhiCHKvZkhkp4A7PkkCIBON0-BXW26d`,
+      //accounts: [process.env.privateKey]
+    },
+    sepolia: {
+        url: `https://sepolia.infura.io/v3/d7905673d2a945749f46ef1c1d70e589`,
+        accounts: [process.env.privateKey]
+    },
+    matic: {
+      url: "https://polygon-mainnet.g.alchemy.com/v2/nAhiCHKvZkhkp4A7PkkCIBON0-BXW26d",
+      //accounts: [process.env.privateKey]
+    },
+    goerli: {
+      url: key,
+      accounts: [secret],
+    },
   },
-  etherscan: {
-    apiKey: `${ETHERSCAN_API_KEY}`
+  solidity: {
+    version: "0.8.9",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
   },
-  paths: {
-    artifacts: './src/artifacts',
-  }
 };

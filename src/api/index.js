@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 
-import contractAbi from "../contracts/abi.json"
+import abi from "../contracts/abi.json"
 import contractAddress from "../contracts/contract_address.json"
 
 import { timeConv } from "../utils"
@@ -46,7 +46,7 @@ const parseResult = (txnResult, fileType) => {
 const getContract = async (ethereum) => {
     const signer = await getSigner(ethereum)
 
-    const contract = new ethers.Contract(contractAddress.contractAddress, contractAbi.abi, signer)
+    const contract = new ethers.Contract(contractAddress, abi, signer)
 
     return contract
 }

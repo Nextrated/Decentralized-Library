@@ -25,7 +25,18 @@ import { create } from 'ipfs-http-client';
 import abi from '../contracts/abi.json';
 import contractAddress from '../contracts/contract_address.json';
 
-const client = create('https://ipfs.infura.io:5001/api/v0');
+const projectId = '2K8Hk2WXxV0wQQuj9EeB0u3Hn2U';
+const projectSecret = 'fa53a3964c9a864007987a901ffafddc';
+
+const client = create({
+      host: 'ipfs.infura.io',
+      port: 5001,
+      protocol: 'https',
+      headers: {
+      authorization: 
+          'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64')
+      }});
+  
 
 const Upload = ({reload, loading}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -66,8 +77,8 @@ const Upload = ({reload, loading}) => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const fileUploadContract = new ethers.Contract(
-          contractAddress.contractAddress,
-          abi.abi,
+          contractAddress,
+          abi,
           signer
         );
         const fileUploadTxn = await fileUploadContract.fileUpload(
