@@ -7,16 +7,8 @@ Metafiles is a decentralized library that allows users upload and share files. T
 A user can also search for files by CID or by file name. 
 Users can preview files as well as download them locally based on their choice. Share link option is available for public files while share access is available for private files.
 
-* Contract address: "0x18E30654BE206b778a5ad7Dd08278BcED20FbD11"
+* Network: sepolia
 
-* Network: rinkeby
-
-
-## Links
-
-* [Etherscan url](https://rinkeby.etherscan.io/address/0x18E30654BE206b778a5ad7Dd08278BcED20FbD11#code)
-
-* [Deployed url](https://metafiles.netlify.app)
 
 ## To run the project locally
 
