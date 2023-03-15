@@ -17,22 +17,22 @@ export default function Header({showSidebar , isConnected, currentAccount, toggl
     <Box 
         p={5} 
         w="100vw" 
-        bg={bg}
-        position="fixed" 
+        bg={bg} 
         d="flex" 
         justifyContent="space-between"
         alignItems="center"
         zIndex="99"
+        h="70px"
     >
-            <Box>
+            <Box float="left">
             
-            <Text color={text} d="flex" alignItems="center"> <Icon as={GiHamburgerMenu} onClick={showSidebar} mr={3} cursor="pointer"/> MetaFiles </Text>
+            <Text color={text} > <Icon as={GiHamburgerMenu} onClick={showSidebar} mr={3} cursor="pointer"/> MetaFiles </Text>
             </Box>
         
         <Box d="flex" justifyContent="space-around" pr={5}>
-            <ColorModeSwitcher justifySelf="flex-end"/>
-            <Box d="flex" flexDirection="column" mt="-10px">
-                 <Button bg="purple" color="white" ml={5} onClick={toggleWallet} mb={2}>
+            <Box d="flex" >
+            <ColorModeSwitcher float="right" justifySelf="flex-end"/>
+                 <Button float="right" bg="purple" color="white" ml={5} onClick={toggleWallet} mb={2}>
                      {isConnected ? <> {truncate(currentAccount)}</> : <><AiOutlineWallet/> &nbsp; Connect Wallet</>}
                  </Button>
                  <sub style={{color:"orange",fontSize:"10px", fontWeight:"bold", textAlign:'center'}}>{currentNetwork}</sub>

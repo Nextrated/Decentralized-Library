@@ -13,6 +13,7 @@ import "./App.css";
 import Content from './pages/Content';
 
 // require('dotenv').config()
+export const stateContents = React.createContext();
 
 function App() {
   const {isOpen, onOpen, onClose}= useDisclosure();
@@ -27,6 +28,9 @@ function App() {
   const [showShared, setshowShared] = useState(false);
   const [showSearchPage, setShowSearchPage ] = useState(false);
   const [currentNetwork, setCurrentNetwork] = useState("");
+
+  
+
   // const addr = contractAddress.contractAddress;
   
   // sets trhe current page to show searched files
@@ -210,6 +214,7 @@ function App() {
             showAllFilesPage={setAllPage}
         />
       </Box>
+      
   );
 }
 

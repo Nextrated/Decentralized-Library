@@ -1,5 +1,5 @@
-import { Box, Button, Grid, Input, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { Box, Button, Grid, Input, Text, useDisclosure} from '@chakra-ui/react';
+import React, { useEffect, useState, useContext } from 'react';
 import { fetchPrivateFiles, fetchPublicFiles, fetchSharedFiles, fetchMyPublicFiles } from '../api';
 import Upload from '../components/Upload';
 import AllFiles from './AllFiles';
@@ -8,6 +8,8 @@ import PublicFiles from './PublicFiles';
 import MyPublicFiles from './MyPublicFiles';
 import SearchFiles from './SearchFiles';
 import SharedFiles from './SharedFiles';
+import Header from '../components/Header';
+import { stateContents } from '../App';
 
 export default function Content({
   showAll,
@@ -101,6 +103,7 @@ export default function Content({
         mt="100px"
         px={{ base: 5, md: 10, lg: 12 }}
       >
+        
         <Input
           type="text"
           placeholder="Enter file title or cid to search all files"
